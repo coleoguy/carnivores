@@ -62,10 +62,10 @@ for(i in 1:100){
 }
 
 #write out the tree depth file for analysing results 
-write.csv(tree.depths, "results/tree_depths.csv")
+write.csv(tree.depths, "results/tree_depths.csv", row.names = F)
 
 #rm old data and clean up environment
-rm(trees, cur.tree, i,  missing)
+rm(trees, cur.tree, i,  missing, tree.depths)
 
 ###DISCRETIZE RANGE SIZES###----------------------------------------------------
 
@@ -154,11 +154,11 @@ prior <- make.prior.exponential(0.5)
 #nsteps = number of  mcmc steps to  take
 #upper = upperr bounds on  parameter space
 #lower = lower bounds on parameter space
-temp <- mcmc(con.lik, 
+temp <- mcmc(lik = con.lik, 
              x.init = runif(6,0,1), 
              prior = prior,
              w = 1, 
-             nsteps = 500, 
+             nsteps = 2500, 
              upper = 50,
              lower = 0)
 
