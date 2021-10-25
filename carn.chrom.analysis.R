@@ -62,7 +62,7 @@ for(i in 1:100){
 }
 
 #write out the tree depth file for analysing results 
-write.csv(tree.depths, "results/tree_depths.csv", row.names = F)
+write.csv(tree.depths, "results_25small75large/tree_depths.csv")
 
 #rm old data and clean up environment
 rm(trees, cur.tree, i,  missing, tree.depths)
@@ -72,9 +72,9 @@ rm(trees, cur.tree, i,  missing, tree.depths)
 #look at a histagram of the data
 hist(dat.pruned$range.size, breaks =200)
 #adds a line to the histogram where the 75th quantile is
-abline(v=quantile(dat.pruned$range.size, 0.75), col = "blue")
+abline(v=quantile(dat.pruned$range.size, 0.25), col = "blue")
 #stores as a variable the 75th quantile cutoff value
-quant <- quantile(dat.pruned$range.size, 0.75)
+quant <- quantile(dat.pruned$range.size, 0.25)
 #assigns the range values into two groups for the model.
 #0 = small; 1 = large pop size
 dat.pruned$range.size <- as.numeric(dat.pruned$range.size > quant)
@@ -182,7 +182,7 @@ plot(temp$tran21)
 ###FULL PARALLEL RUN OF TREES###------------------------------------------------
 
 #tuning parameters for w for full run
-tune <- temp[-c(1:100), ]
+tune <- temp[-c(1:550), ]
 w <- diff(sapply(tune[2:7],
                  quantile, c(.05, .95)))
 
@@ -199,13 +199,13 @@ registerDoSNOW(cl)
 #create empty list to store results
 result <- list()
 #set iter to 100  for the number of steps to take in the model
-iter <- 500
+iter <- 2500
 
 
 # we will loop through all 100 trees
 # fitting model 
 
-x <- foreach(i=1:100) %dopar%{
+x <- foreach(i=13:100) %dopar%{
   library(phytools)
   library(chromePlus)
   library(diversitree)
@@ -215,7 +215,7 @@ x <- foreach(i=1:100) %dopar%{
   ###Sampling of chromosome dataset ###
   #load in tree data
   trees <- read.nexus("carnivora.nex")
-  for(j in 1:100){
+  for(j in 13:100){
     #trees are ultrametric, this line corrects for the fact that the tolerance 
     #for being ultrametric is not met by some trees
     trees[[j]] <- force.ultrametric(trees[[j]], method="extend")
