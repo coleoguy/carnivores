@@ -11,34 +11,27 @@ for(i in 1:100){
 }
 
 #load in chromosome data
-chroms <- read.csv("chroms.csv")
+chroms <- read.csv("mammal_chroms_update.csv")
+chroms <- chroms[,5:6]
+chroms[,2] <- as.numeric(chroms[,2])/2
+chroms <- na.omit(chroms)
 
-#load in range size
-range <- read.csv("calc.carn.range.sizes.csv")
-#change column names to be informative
-colnames(range) <- c("species", "range.size")
 
 ###PRUNE DATA###----------------------------------------------------------------
 
-#prune chromosome number and combnine with range size
-dat.pruned <- range
-#add empty third column for chromosome number
-dat.pruned[, 3]  <- NA
-#name the third column
-colnames(dat.pruned)[3] <- "hap.chrom"
-#this loop samples a chromosome number for each species when there is more than 
-#one
-for(i in 1:nrow(range)){
-  hit <- which(chroms$species == range$species[i])
-  if(length(hit)>1)  hit <- sample(hit, 1)
-  dat.pruned[i, 3] <- chroms[hit, 2]
-}
-#rm old data and clean up environment
-rm(chroms, range, hit, i)
-
 #prune and scale trees
 #find tips that are missing from the dataset
-missing <- trees[[1]]$tip.label[!trees[[1]]$tip.label %in% dat.pruned$species]
+missing <- trees[[1]]$tip.label[!trees[[1]]$tip.label %in% chroms$tree.name]
+
+good <- trees[[1]]$tip.label[trees[[1]]$tip.label %in% chroms$tree.name]
+good[, 2]  <- NA
+
+
+chrom_complete <- chroms[chroms$tree.name %in% good, ]
+duplicates <- which(duplicated(chrom_complete$tree.name))
+chrom_complete <- chrom_complete[-c(12,28,58,120),]
+
+
 #empty list to store pruned trees
 trees.drop <- list()
 
@@ -49,9 +42,9 @@ for(i in 1:100){
 
 
 #pull out data needed for calculating tip rates
-chrom <- dat.pruned$hap.chrom
-names(chrom) <- dat.pruned$species
-rm(dat.pruned)
+chrom <- chrom_complete$female2n
+names(chrom) <- chrom_complete$tree.name
+rm(chroms)
 
 #remove tree 52 which is not rooted or fully dichotomous
 trees.pruned <- list()
@@ -99,4 +92,4 @@ colnames(tipp.rates) <- paste("tree", 1:99)
 #tipp.rates[,] <- abs(tipp.rates)
 Average <- rowSums(tipp.rates)/99
 tipp.rates <- cbind(tipp.rates, Average)
-write.csv(tipp.rates, file = "../results/tip.rates.csv")
+write.csv(tipp.rates, file = "tip.rates_allmammals.csv")

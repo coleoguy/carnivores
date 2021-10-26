@@ -1,6 +1,6 @@
-#load in necessary packages
+#set working directory as figures/heatmap
+#load in packages that are needed
 library(phytools)
-library(geiger)
 
 #load in tree data
 trees <- read.nexus("carnivora.nex")
@@ -47,56 +47,35 @@ for(i in 1:100){
   trees.drop[[i]] <- drop.tip(trees[[i]], tip = missing)
 }
 
-
-#pull out data needed for calculating tip rates
-chrom <- dat.pruned$hap.chrom
-names(chrom) <- dat.pruned$species
-rm(dat.pruned)
-
 #remove tree 52 which is not rooted or fully dichotomous
 trees.pruned <- list()
 trees.pruned <- trees.drop[-c(52)]
 
+#select a single tree to use
+pruned.tree <- trees.pruned[[sample(1:99, 1)]]
+rm(trees, trees.pruned)
 
-#loop through calculating 
-for(k in 1:99){
-  print(k)
-  # estimate ancestral states
-  foo <- ace(x = chrom, phy = trees.pruned[[k]], model = "ML")
-  # get tip branches
-  tip.branch <- c()
-  for(i in 1:nrow(trees.pruned[[k]]$edge)){
-    val <- trees.pruned[[k]]$edge[i, 2]
-    if(!val %in% trees.pruned[[k]]$edge[, 1]){
-      tip.branch <- c(tip.branch, i)
-    }
-  }
-  
-  anc.state <- c()
-  for(j in 1:length(tip.branch)){
-    # get node microsatellite estimate
-    trees.pruned[[k]]$edge.length[tip.branch]
-    wanted.node <- trees.pruned[[k]]$edge[tip.branch[j], 1]
-    anc.state[j] <- as.numeric(foo$ace[names(foo$ace) == wanted.node])
-  }
-  curr.state <- c()
-  for(j in 1:length(tip.branch)){
-    curr.sp <- trees.pruned[[k]]$tip.label[j]
-    curr.state <- chrom[names(chrom) == curr.sp]
-  }
-  print(anc.state - curr.state)
-  tip.rates <- (anc.state - curr.state) /
-    trees.pruned[[k]]$edge.length[tip.branch]
-  names(tip.rates) <- trees.pruned[[k]]$tip.label
-  if(k == 1){
-    tipp.rates <- tip.rates
-  }else{
-    tipp.rates <- cbind(tipp.rates, tip.rates)
-  }
+#load in tip rate data
+tips <- read.csv("tip.rates.csv", row.names = 1)
+#subset out columns that we need
+tips <- tips[100]
+
+#this loop will make sure the tip labels and the chromosome data are in the
+#same order
+foo2 <- tips
+sp2 <- c()
+for(i in 1:nrow(tips)){
+  hit2 <- which(row.names(tips)==pruned.tree$tip.label[i])
+  foo2[i, ] <- tips[hit2, ]
+  sp2[i] <- row.names(tips)[hit2]
 }
-colnames(tipp.rates) <- paste("tree", 1:99)
+row.names(foo2) <- sp2
 
-#tipp.rates[,] <- abs(tipp.rates)
-Average <- rowSums(tipp.rates)/99
-tipp.rates <- cbind(tipp.rates, Average)
-write.csv(tipp.rates, file = "../results/tip.rates.csv")
+tips <- foo2$Average
+names(tips) <- row.names(foo2)
+
+#plot tree with bars
+plotTree.wBars(tree = pruned.tree,
+               x = abs(tips))
+
+#export as pdf 7" x 7"
