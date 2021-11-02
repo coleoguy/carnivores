@@ -6,7 +6,7 @@ library(geiger)
 #load in tree data
 trees <- read.nexus("carnivora.nex")
 for(i in 1:100){
-  #trees are ultrametric, this line corrects for the fact that the tolerance 
+  #trees are ultrametric, this line corrects for the fact that the tolerance
   #for being ultrametric is not met by some trees
   trees[[i]] <- force.ultrametric(trees[[i]], method="extend")
 }
@@ -27,7 +27,7 @@ dat.pruned <- range
 dat.pruned[, 3]  <- NA
 #name the third column
 colnames(dat.pruned)[3] <- "hap.chrom"
-#this loop samples a chromosome number for each species when there is more than 
+#this loop samples a chromosome number for each species when there is more than
 #one
 for(i in 1:nrow(range)){
   hit <- which(chroms$species == range$species[i])
@@ -58,12 +58,21 @@ rm(dat.pruned)
 trees.pruned <- list()
 trees.pruned <- trees.drop[-c(52)]
 
+rm(trees, trees.drop, i , missing)
 
-#loop through calculating 
+
+chrom2 <- chrom
+
+#loop through calculating
 for(k in 1:99){
   print(k)
+  for(i in 1:length(chrom)){
+    current <- trees.pruned[[k]]$tip.label[i]
+    hit <- which(names(chrom) == current)
+    chrom2[i] <- chrom[hit]
+  }
   # estimate ancestral states
-  foo <- ace(x = chrom, phy = trees.pruned[[k]], model = "ML")
+  foo <- ace(x = chrom2, phy = trees.pruned[[k]], model = "ML")
   # get tip branches
   tip.branch <- c()
   for(i in 1:nrow(trees.pruned[[k]]$edge)){
@@ -72,7 +81,7 @@ for(k in 1:99){
       tip.branch <- c(tip.branch, i)
     }
   }
-  
+
   anc.state <- c()
   for(j in 1:length(tip.branch)){
     # get node microsatellite estimate
@@ -100,4 +109,4 @@ colnames(tipp.rates) <- paste("tree", 1:99)
 #tipp.rates[,] <- abs(tipp.rates)
 Average <- rowSums(tipp.rates)/99
 tipp.rates <- cbind(tipp.rates, Average)
-write.csv(tipp.rates, file = "../results/tip.rates.csv")
+write.csv(tipp.rates, file = "tip.rates.csv")

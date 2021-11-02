@@ -5,7 +5,7 @@ library(phytools)
 #load in tree data
 trees <- read.nexus("carnivora.nex")
 for(i in 1:100){
-  #trees are ultrametric, this line corrects for the fact that the tolerance 
+  #trees are ultrametric, this line corrects for the fact that the tolerance
   #for being ultrametric is not met by some trees
   trees[[i]] <- force.ultrametric(trees[[i]], method="extend")
 }
@@ -26,7 +26,7 @@ dat.pruned <- range
 dat.pruned[, 3]  <- NA
 #name the third column
 colnames(dat.pruned)[3] <- "hap.chrom"
-#this loop samples a chromosome number for each species when there is more than 
+#this loop samples a chromosome number for each species when there is more than
 #one
 for(i in 1:nrow(range)){
   hit <- which(chroms$species == range$species[i])
@@ -73,9 +73,14 @@ row.names(foo2) <- sp2
 
 tips <- foo2$Average
 names(tips) <- row.names(foo2)
-
+x <- c()
+for(i in 1:110){
+  x[i] <- tips[which(names(tips) == pruned.tree$tip.label[i])]
+}
+names(x) <- pruned.tree$tip.label
 #plot tree with bars
 plotTree.wBars(tree = pruned.tree,
-               x = abs(tips))
+               x = x)
 
 #export as pdf 7" x 7"
+plot(pruned.tree, cex=.5)
