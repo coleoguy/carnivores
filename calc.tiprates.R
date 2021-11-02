@@ -2,6 +2,7 @@
 library(phytools)
 library(geiger)
 
+
 #load in tree data
 trees <- read.nexus("carnivora.nex")
 for(i in 1:100){
