@@ -342,7 +342,7 @@ points(x = rep(xPoints,2),
 text(x = rep(xPoints,2),
      y = c(xPoints - xPoints * 0.05,
            xPoints - xPoints * 0.1),
-     labels = c("Small RS", "Large RS"),
+     labels = c("Large RS", "Red RS"),
      pos = 4,
      cex = 0.8)
 
