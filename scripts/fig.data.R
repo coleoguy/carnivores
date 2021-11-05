@@ -10,16 +10,16 @@ library(viridis)
 ###LOAD IN DATA###--------------------------------------------------------------
 
 #load in tree data
-trees <- read.nexus("carnivora.nex")
+trees <- read.nexus("../data/carnivora.nex")
 for(i in 1:100){
   trees[[i]] <- force.ultrametric(trees[[i]], method="extend")
 }
 
 #load in chromosome data
-chroms <- read.csv("chroms.csv")
+chroms <- read.csv("../data/chroms.csv")
 
 #load in range size
-range <- read.csv("calc.carn.range.sizes.csv")
+range <- read.csv("../data/calc.carn.range.sizes.csv")
 #change column names to be informative
 colnames(range) <- c("species", "range.size")
 
@@ -61,10 +61,6 @@ rm(trees, cur.tree, i,  missing, tree.depths)
 
 ###DISCRETIZE RANGE SIZES###----------------------------------------------------
 
-#look at a histagram of the data
-hist(dat.pruned$range.size, breaks =200)
-#adds a line to the histogram where the 75th quantile is
-abline(v=quantile(dat.pruned$range.size, 0.75), col = "blue")
 #stores as a variable the 75th quantile cutoff value
 quant <- quantile(dat.pruned$range.size, 0.75)
 #assigns the range values into two groups for the model.
@@ -110,19 +106,23 @@ plot(smap.est2, fsize=c(.00001, .4),
 #export 6"x6"
 
 ###CONTINUOUS TRAIT MAP###------------------------------------------------------
+tree <- trees.pruned[1]
+
+#paint subtrees
+ss <- getStates(tree, "tips")
+
 #create a vector of chromosome numbers for barplot
 chroms <- dat.pruned$hap.chrom
 names(chroms) <- dat.pruned$species
 
 #use plot tree with bars to create a phylogenetic tree with barplots for the 
 #chromosome number
-plotTree.wBars(tree = tree,
+plotTree.barplot(tree = smap.est2$tree,
                x = chroms,
-               type = "fan",
-               col = c("black"),
-               border = NA,
-               width = 0.009,
-               edge.width = .01)
+               args.plotTree = list(ftype = "off"),
+               col = (viridis(3, option = "magma")[dat.pruned$range.size + 1]),
+               args.axis = list(at = seq(0,50, by = 10)))
+add.color.bar(cols = viridis(2, end = 0.95, option = "G"), title = "Range Size")
 
 #export 6"x6"
 

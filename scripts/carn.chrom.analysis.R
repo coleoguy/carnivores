@@ -11,7 +11,7 @@ library(doSNOW)
 ###LOAD IN DATA###--------------------------------------------------------------
 
 #load in tree data
-trees <- read.nexus("carnivora.nex")
+trees <- read.nexus("../data/carnivora.nex")
 for(i in 1:100){
   #trees are ultrametric, this line corrects for the fact that the tolerance 
   #for being ultrametric is not met by some trees
@@ -19,10 +19,10 @@ for(i in 1:100){
 }
 
 #load in chromosome data
-chroms <- read.csv("chroms.csv")
+chroms <- read.csv("../data/chroms.csv")
 
 #load in range size
-range <- read.csv("calc.carn.range.sizes.csv")
+range <- read.csv("../data/calc.carn.range.sizes.csv")
 #change column names to be informative
 colnames(range) <- c("species", "range.size")
 
@@ -62,7 +62,7 @@ for(i in 1:100){
 }
 
 #write out the tree depth file for analysing results 
-write.csv(tree.depths, "results_25small75large/tree_depths.csv")
+write.csv(tree.depths, "../results/25small75larg_tree_depths.csv")
 
 #rm old data and clean up environment
 rm(trees, cur.tree, i,  missing, tree.depths)
@@ -205,7 +205,7 @@ iter <- 2500
 # we will loop through all 100 trees
 # fitting model 
 
-x <- foreach(i=13:100) %dopar%{
+x <- foreach(i=1:100) %dopar%{
   library(phytools)
   library(chromePlus)
   library(diversitree)
@@ -214,16 +214,16 @@ x <- foreach(i=13:100) %dopar%{
   
   ###Sampling of chromosome dataset ###
   #load in tree data
-  trees <- read.nexus("carnivora.nex")
-  for(j in 13:100){
+  trees <- read.nexus("../data/carnivora.nex")
+  for(j in 1:100){
     #trees are ultrametric, this line corrects for the fact that the tolerance 
     #for being ultrametric is not met by some trees
     trees[[j]] <- force.ultrametric(trees[[j]], method="extend")
   }
   #load in chromosome data
-  chroms <- read.csv("chroms.csv")
+  chroms <- read.csv("../data/chroms.csv")
   #load in range size
-  range <- read.csv("calc.carn.range.sizes.csv")
+  range <- read.csv("../data/calc.carn.range.sizes.csv")
   #change column names to be informative
   colnames(range) <- c("species", "range.size")
   #prune chromosome number and combnine with range size
@@ -276,7 +276,7 @@ x <- foreach(i=13:100) %dopar%{
                       upper = 50,
                       lower = 0)
   # just in case we have a crash lets write results for each tree
-  write.csv(result[[i]], file=paste("tree.carn",i,".csv", sep=""))
+  write.csv(result[[i]], file=paste("../result/tree.carn",i,".csv", sep=""))
 }
 
 #stop the cluster
