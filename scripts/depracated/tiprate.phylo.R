@@ -1,15 +1,9 @@
-#Michelle Jonika
-#November 2, 2021
-
-#figure to visualize the tip rates
-
-
 #set working directory as figures/heatmap
 #load in packages that are needed
 library(phytools)
 
 #load in tree data
-trees <- read.nexus("../data/carnivora.nex")
+trees <- read.nexus("carnivora.nex")
 for(i in 1:100){
   #trees are ultrametric, this line corrects for the fact that the tolerance
   #for being ultrametric is not met by some trees
@@ -17,10 +11,10 @@ for(i in 1:100){
 }
 
 #load in chromosome data
-chroms <- read.csv("../data/chroms.csv")
+chroms <- read.csv("chroms.csv")
 
 #load in range size
-range <- read.csv("../data/calc.carn.range.sizes.csv")
+range <- read.csv("calc.carn.range.sizes.csv")
 #change column names to be informative
 colnames(range) <- c("species", "range.size")
 
@@ -62,7 +56,7 @@ pruned.tree <- trees.pruned[[sample(1:99, 1)]]
 rm(trees, trees.pruned)
 
 #load in tip rate data
-tips <- read.csv("../results/tip.rates.csv", row.names = 1)
+tips <- read.csv("tip.rates.csv", row.names = 1)
 #subset out columns that we need
 tips <- tips[100]
 
@@ -90,4 +84,3 @@ plotTree.wBars(tree = pruned.tree,
 
 #export as pdf 7" x 7"
 plot(pruned.tree, cex=.5)
-

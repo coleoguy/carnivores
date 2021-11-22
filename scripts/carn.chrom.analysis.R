@@ -5,8 +5,6 @@
 library(phytools)
 library(chromePlus)
 library(diversitree)
-# I switched to doMC it is a lot easier on a mac it takes environment with it
-# library(parallel)
 library(doMC)
 
 ###LOAD IN DATA###--------------------------------------------------------------
@@ -37,13 +35,8 @@ colnames(dat.pruned)[3] <- "hap.chrom"
 # TODO columns are out of order lets fix them immediately
 dat.pruned <- dat.pruned[, c(1, 3, 2)]
 
-
-#this loop samples a chromosome number for each species when there is more than
-#one
-# TODO here I changed the code to create 100 datasets
-# i did this because I didn't want to mess with reading
-# and editing the list in each of the parallel runs it will
-# lets us simplify the code down in the parallel run part
+#this loop creates 100 datasets, sampling a chromosome number for each species 
+#when there is more than one
 datalist <- list()
 for(j in 1:100){
   for(i in 1:nrow(range)){
@@ -79,17 +72,11 @@ for(i in 1:100){
   trees.pruned[[i]] <- cur.tree
 }
 
-# TODO previously you had written out the tree depth file
-# for analysing results a better approach is to use them
-# in this script at the end and convert rates back to MY
-# units prior to saving results
-
 #rm old data and clean up environment
 rm(trees, cur.tree, i, j, missing, chroms, dat.pruned, range, hit)
 
 ###DISCRETIZE RANGE SIZES###----------------------------------------------------
-# TODO after a lot of playing I think you can simplify and just say
-# cut it at the median has less of a feel of cherry picking
+#discretize range size based on the median
 for(i in 1:100){
   x <- median(datalist[[1]]$range.size)
   datalist[[i]]$range.size <- as.numeric(datalist[[1]]$range.size >= x)
@@ -97,36 +84,14 @@ for(i in 1:100){
 #0 = small; 1 = large pop size
 rm(i, x)
 
-# # look at a histagram of the data
-# hist(dat.pruned$range.size, breaks =200)
-# # adds a line to the histogram where the 75th quantile is
-# abline(v=quantile(dat.pruned$range.size, 0.25), col = "blue")
-# # stores as a variable the 75th quantile cutoff value
-# quant <- quantile(dat.pruned$range.size, 0.25)
-#
-# #assigns the range values into two groups for the model.
-#
-# dat.pruned$range.size <- as.numeric(dat.pruned$range.size > quant)
-# dat.pruned$range.size <- as.numeric(dat.pruned$range.size >= median(dat.pruned$range.size))
-# # quant is the the threshold cutoff for discretization
-# # quant: ***6.7E7*** [Replace if modified]
-# # rm quant variable to clean up environment
-
-
 ###MAKE LIKELIHOOD FUNCTION###--------------------------------------------------
-
-# TODO already put in correct order above
-# convert chromosome number and binary trait state to format for diversitree
-# d.data <- as.data.frame(dat.pruned[,c(1,3,2)])
 
 #store chrom.range
 chrom.range <- range(datalist[[52]]$hap.chrom) + c(-1, 1)
 
 #run datatoMatrix function necessary for diversitree likelihood function
-# TODO here I replicate what you had but for all datasets
 for(i in 1:100){
   datalist[[i]] <- datatoMatrix(x=datalist[[i]], range = chrom.range, hyper = T)
-
 }
 
 #make a likelihood function
@@ -154,15 +119,7 @@ con.lik <- constrainMkn(data = datalist[[52]],
 argnames(con.lik)
 rm(chrom.range, i, lk.mk)
 ######### FIT 1 TREE AS TEST##########
-# TODO I spent a few hours playing with the
-# prior on many different trees and basically
-# what I found was that when the prior is low
-# it can wander around a lot with high rates in
-# large pops before eventually finding a better
-# parameter space with high rates associated with
-# small pops so I went with a relatively high prior
-# as this tended to get us honed in on this high
-# probability parameter space much more quickly.
+#assign prior from exponential distribution
 prior <- make.prior.exponential(2)
 
 #fit a biologically realistic model using diversitree's mcmc
@@ -180,24 +137,6 @@ temp <- mcmc(lik = con.lik,
              nsteps = 300,
              upper = 20,
              lower = 0)
-######### FIT 1 TREE AS TEST##########
-
-###EVALUATE RESULTS FROM 1 TREE#######
-# TODO lets get rid of this eventually/now
-#evaluate convergence
-plot(temp$p)
-#evaluate asc1
-plot(temp$asc1)
-#evaluate desc1
-plot(temp$desc1)
-#evaluate asc2
-plot(temp$asc2)
-#evaluate desc2
-plot(temp$desc2)
-#evaluate tran12
-plot(temp$tran12)
-#evaluate tran21
-plot(temp$tran21)
 
 ###FULL PARALLEL RUN OF TREES###------------------------------------------------
 
@@ -207,9 +146,7 @@ w <- diff(sapply(tune[2:7],
                  quantile, c(.05, .95)))
 
 
-# TODO I switch doMC because it takes the environment with it into
-# the parallel processing so greatly eases the coding
-# this is the number of cores to use
+# register cores to use in parallel
 registerDoMC(detectCores(all.tests = T) - 3)
 
 #create empty list to store results
@@ -220,37 +157,7 @@ iter <- 300
 
 # we will loop through all 100 trees
 # fitting model
-
 x <- foreach(i = 1:100) %dopar%{
-  # library(phytools)
-  # library(chromePlus)
-  # library(diversitree)
-  # library(parallel)
-  # library(doSNOW)
-  # TODO becuase I made two lists ready to go (trees and data)
-  # we can get rid of a bunch of stuff in here
-  ###Sampling of chromosome dataset ###
-  #load in tree data
-  #trees <- read.nexus("../data/carnivora.nex")
-  #for(j in 1:100){
-    #trees are ultrametric, this line corrects for the fact that the tolerance
-    #for being ultrametric is not met by some trees
-  #  trees[[j]] <- force.ultrametric(trees[[j]], method="extend")
-  #}
-  #load in chromosome data
-  #chroms <- read.csv("../data/chroms.csv")
-  #this loop samples a chromosome number for each species when there is more than
-  #one
-  #for(k in 1:nrow(range)){
-  #  hit <- which(chroms$species == range$species[k])
-  #  if(length(hit)>1)  hit <- sample(hit, 1)
-  #  dat.pruned[k, 3] <- chroms[hit, 2]
-  #}
-  #rm old data and clean up environment
-  #rm(chroms, range, hit, k, j)
-  #prune and scale trees
-  ###END CHROMOSOME SAMPLING###
-
   # make the basic likelihood function for the data
   lk.mk <- make.mkn(trees.pruned[[i]], states = datalist[[i]],
                     k = ncol(datalist[[i]]), strict = F,
@@ -268,23 +175,24 @@ x <- foreach(i = 1:100) %dopar%{
                       nsteps = iter,
                       upper = 50,
                       lower = 0)
-  # just in case we have a crash lets write results for each tree
-  # TODO lets not I think I fixed it so we just dont have any crashes that seems better
-  # write.csv(result[[i]], file=paste("../result/tree.carn",i,".csv", sep=""))
 }
+
 ##### Checking for convergence ###########
 # TODO after checking runs I found that some runs stayend in a low prob
 # area with high rates in clades that have high pop sizes. To see if these
 # really are global optimum I first identified which runs these were
+
+#assign variable to store those runs that don't converge
 uncon <- c()
+#loops through to identify runs that have a low probability and don't reach 
+#convergence
 for(i in 1:100){
   if(mean(x[[i]]$asc2[200:300])-mean(x[[i]]$asc1[200:300]) < 0){
     uncon <- c(uncon, i)
   }
 
 }
-# TODO Then I just tried swapping rates between high and
-# low pop to see what happened
+#loop that swaps rates between high and low pop to see if that impacts convergence
 for(i in uncon){
   lk.mk <- make.mkn(trees.pruned[[i]], states = datalist[[i]],
                     k = ncol(datalist[[i]]), strict = F,
@@ -297,19 +205,19 @@ for(i in uncon){
   print(tried - found)
 }
 
-
-##### Checking for convergence ###########
-
 ##### Processing results #########
+#only process post burn-in results
 post.burn <- x[[1]][201:300, 2:8]
+#transform the post burn in results back into MY from the tree depths
 post.burn[,1:6] <- post.burn[,1:6]/tree.depths[1]
 
+#loop that organizes rates into a pretty table
 for(i in 2:100){
   temp <- x[[i]]
   temp[,2:7] <- temp[,2:7]/tree.depths[i]
   post.burn <- rbind(post.burn, temp[201:300,2:8])
 }
-# now save this
+#save the results output
 write.csv(post.burn,file="../results/carn.med.hb.csv")
-##### Processing results #########
+
 

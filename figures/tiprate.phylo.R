@@ -1,14 +1,8 @@
 #Michelle Jonika
-#september 7, 2021
+#November 2, 2021
 
-#creates a phylogenetic plot visualizing chromosome number and range size as a
-#discrete trait
+#figure to visualize the tip rates
 
-###LOAD IN PACKAGES###----------------------------------------------------------
-
-library(phytools)
-library(chromePlus)
-library(viridis)
 
 ###LOAD IN DATA###--------------------------------------------------------------
 
@@ -26,6 +20,11 @@ chroms <- read.csv("../data/chroms.csv")
 range <- read.csv("../data/calc.carn.range.sizes.csv")
 #change column names to be informative
 colnames(range) <- c("species", "range.size")
+
+#load in tip rate data
+tips <- read.csv("../results/tip.rates.csv", row.names = 1)
+#subset out columns that we need
+tips <- tips[101]
 
 ###PRUNE DATA###----------------------------------------------------------------
 
@@ -87,35 +86,49 @@ for(i in 1:100){
 #0 = small; 1 = large pop size
 rm(i, x)
 
-###CONTINUOUS TRAIT MAP###------------------------------------------------------
+###ORDER TIP LABELS AND CHROMOSOME DATA###--------------------------------------
+#this loop will make sure the tip labels and the chromosome data are in the
+#same order
 
-#create a vector of chromosome numbers for barplot
-chroms <- datalist[[1]]$hap.chrom
-names(chroms) <- datalist[[1]]$species
+#create a vector with the tip rates
+foo2 <- tips
+#create an empty vector for the species matches
+sp2 <- c()
+for(i in 1:nrow(tips)){
+  #find which tip rates match the tip labels on the the tree
+  hit2 <- which(row.names(tips)==trees.pruned[[1]]$tip.label[i])
+  #store the species name in the vector
+  foo2[i, ] <- tips[hit2, ]
+  #store the tip rate value in the species vector
+  sp2[i] <- row.names(tips)[hit2]
+}
+#name the values of the tip rates based on the order of the species names
+row.names(foo2) <- sp2
 
-#use plot tree with bars to create a phylogenetic tree with barplots for the 
-#chromosome number
+#
+tips <- foo2$Average
+names(tips) <- row.names(foo2)
+tiprates <- c()
+for(i in 1:110){
+  tiprates[i] <- tips[which(names(tips) == trees.pruned[[1]]$tip.label[i])]
+}
+names(tiprates) <- trees.pruned[[1]]$tip.label
+#plot tree with bars
 plotTree.barplot(tree = trees.pruned[[1]],
-                 x = chroms,
-                 lwd=4,
-                 args.plotTree = 
-                   list(ftype = "off"),
-                 args.barplot = 
-                   list(col = viridis(3, option= "D", 
-                                      end = 0.6)[datalist[[1]]$range.size + 1],
-                        xlab = "Chromosome Number"),
-                 args.axis = list(at = seq(0,40, by = 5)))
-legend(x = "topright", 
-       legend = c("Small Range Size", "Large Range Size"), 
+               x = tiprates,
+               lwd=4,
+               args.plotTree = 
+                 list(ftype = "off"),
+               args.barplot = 
+                 list(col = viridis(2, option= "G", 
+                                    end = 0.6)[datalist[[1]]$range.size + 1],
+                      xlab = "Chromosome Number Tip Rates"),
+               args.axis = list(at = seq(0,300, by = 50)))
+legend(x = "right", 
+       legend = c("Large Range Size", "Small Range Size"), 
        pch = 22, 
        pt.cex = 2, 
        box.col = "transparent", 
-       pt.bg = viridis(3, option= "D", end = 0.6))
-
-#export 6"x6"
-
-
-
-
-
+       pt.bg = viridis(2, option= "G", end = 0.6))
+#export as pdf 9" x 9"
 

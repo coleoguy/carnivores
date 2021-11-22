@@ -101,18 +101,18 @@ plotTree.barplot(tree = trees.pruned[[1]],
                  args.plotTree = 
                    list(ftype = "off"),
                  args.barplot = 
-                   list(col = viridis(3, option= "D", 
+                   list(col = viridis(2, option= "G", 
                                       end = 0.6)[datalist[[1]]$range.size + 1],
                         xlab = "Chromosome Number"),
                  args.axis = list(at = seq(0,40, by = 5)))
-legend(x = "topright", 
-       legend = c("Small Range Size", "Large Range Size"), 
+legend(x = "right", 
+       legend = c("Large Range Size", "Small Range Size"), 
        pch = 22, 
        pt.cex = 2, 
        box.col = "transparent", 
-       pt.bg = viridis(3, option= "D", end = 0.6))
+       pt.bg = viridis(2, option= "G", end = 0.6))
 
-#export 6"x6"
+#export 9"x9"
 
 
 
