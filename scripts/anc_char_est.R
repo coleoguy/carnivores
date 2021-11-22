@@ -294,6 +294,7 @@ for(i in 1:nrow(tree$edge)){
   }
 }
 datalist[[52]]$tipRates <- tip.branches[,3]
+datalist[[52]]$tipRates
 
 # plot tree with branches
 # load helper functions
