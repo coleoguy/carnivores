@@ -6,6 +6,7 @@
 
 ###LOAD IN PACKAGES###----------------------------------------------------------
 library(viridis)
+library(ape)
 
 ###LOAD IN DATA###--------------------------------------------------------------
 
@@ -49,36 +50,18 @@ for(i in 1:100){
 #rm old data and clean up environment
 rm(trees, cur.tree, i, missing, tree.depths)
 
-###ORDER TIP LABELS AND CHROMOSOME DATA###--------------------------------------
-#this loop will make sure the tip labels and the chromosome data are in the
-#same order
+###PLOT PHYLOGENY AND BAR PLOT###--------------------------------------
 
-#create an empty tip rate vector
-tiprates <- c()
-#store the tip rates in a vector
-rates <- tips$tipRates
-#name the tip rate vector
-names(rates) <- tips$species
-#loop through tip rates and tip labels to make sure they are in the same order 
-for(i in 1:110){
-  tiprates[i] <- rates[which(names(rates) == trees.pruned[[50]]$tip.label[i])]
-}
-#name the newly ordered vector
-names(tiprates) <- trees.pruned[[50]]$tip.label
-#clean up environment
-rm(i, rates)
+#plot phylogeny to piece figure together
+plot.phylo(trees.pruned[[50]], show.tip.label = F)
+#export to PDF 8.5"x11"
 
-barplot(height = tips$ + 1, 
+#plot barplot with chromosome number to piece figure together
+barplot(height = tips$hap.chrom + 1, 
         col=viridis(2, option= "G", end = 0.6)[tips$range.size + 1],
         horiz = T,
-        xlim = c(0,400),
-        main = "Chromosome Number Tip Rates")
-legend(x = "topright", 
-       legend = c("Small Range Size", "Large Range Size"), 
-       pch = 22, 
-       pt.cex = 2, 
-       box.col = "transparent", 
-       pt.bg = viridis(2, option= "G", end = 0.6))
+        xlim = c(0,40),
+        main = "Chromosome Number")
 
 #export to PDF 8.5"x11"
 
