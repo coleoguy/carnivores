@@ -3,6 +3,8 @@
 
 #figure to visualize the tip rates
 
+###LOAD IN PACKAGES###----------------------------------------------------------
+library(viridis)
 
 ###LOAD IN DATA###--------------------------------------------------------------
 
@@ -64,6 +66,22 @@ for(i in 1:110){
 names(tiprates) <- trees.pruned[[50]]$tip.label
 #clean up environment
 rm(i, rates)
+
+
+
+barplot(height = tips$tipRates + 1, 
+        col=viridis(2, option= "G", end = 0.6)[tips$range.size + 1],
+        horiz = T,
+        xlim = c(0,400),
+        main = "Chromosome Number Tip Rates")
+legend(x = "topright", 
+       legend = c("Small Range Size", "Large Range Size"), 
+       pch = 22, 
+       pt.cex = 2, 
+       box.col = "transparent", 
+       pt.bg = viridis(2, option= "G", end = 0.6))
+
+
 #plot tree with bars
 plotTree.barplot(tree = trees.pruned[[50]],
                  x = tiprates + 1,
