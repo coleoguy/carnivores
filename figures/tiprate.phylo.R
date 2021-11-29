@@ -13,47 +13,16 @@ for(i in 1:100){
   #for being ultrametric is not met by some trees
   trees[[i]] <- force.ultrametric(trees[[i]], method = "extend")
 }
-#load in chromosome data
-chroms <- read.csv("../data/chroms.csv")
-
-#load in range size
-range <- read.csv("../data/calc.carn.range.sizes.csv")
-#change column names to be informative
-colnames(range) <- c("species", "range.size")
 
 #load in tip rate data
-tips <- read.csv("../results/tip.rates.csv", row.names = 1)
-#subset out columns that we need
-tips <- tips[101]
+tips <- read.csv("../results/rates.csv", row.names = 1)
+
 
 ###PRUNE DATA###----------------------------------------------------------------
 
-#prune chromosome number and combnine with range size
-dat.pruned <- range
-#add empty third column for chromosome number
-dat.pruned[, 3]  <- NA
-#name the third column
-colnames(dat.pruned)[3] <- "hap.chrom"
-# TODO columns are out of order lets fix them immediately
-dat.pruned <- dat.pruned[, c(1, 3, 2)]
-
-#this loop creates 100 datasets, sampling a chromosome number for each species 
-#when there is more than one
-datalist <- list()
-for(j in 1:100){
-  for(i in 1:nrow(range)){
-    hit <- which(chroms$species == range$species[i])
-    if(length(hit) > 1){
-      hit <- sample(hit, 1)
-    }
-    dat.pruned$hap.chrom[i] <- chroms[hit, 2]
-  }
-  datalist[[j]] <- dat.pruned
-}
-
 #prune and scale trees
 #find tips that are missing from the dataset
-missing <- trees[[1]]$tip.label[!trees[[1]]$tip.label %in% datalist[[1]]$species]
+missing <- trees[[1]]$tip.label[!trees[[1]]$tip.label %in% tips$species]
 #empty list to store pruned trees
 trees.pruned <- list()
 #empty vector to store tree depths
@@ -75,56 +44,38 @@ for(i in 1:100){
 }
 
 #rm old data and clean up environment
-rm(trees, cur.tree, i, j, missing, chroms, dat.pruned, range, hit)
-
-###DISCRETIZE RANGE SIZES###----------------------------------------------------
-#discretize range size based on the median
-for(i in 1:100){
-  x <- median(datalist[[1]]$range.size)
-  datalist[[i]]$range.size <- as.numeric(datalist[[1]]$range.size >= x)
-}
-#0 = small; 1 = large pop size
-rm(i, x)
+rm(trees, cur.tree, i, missing, tree.depths)
 
 ###ORDER TIP LABELS AND CHROMOSOME DATA###--------------------------------------
 #this loop will make sure the tip labels and the chromosome data are in the
 #same order
 
-#create a vector with the tip rates
-foo2 <- tips
-#create an empty vector for the species matches
-sp2 <- c()
-for(i in 1:nrow(tips)){
-  #find which tip rates match the tip labels on the the tree
-  hit2 <- which(row.names(tips)==trees.pruned[[1]]$tip.label[i])
-  #store the species name in the vector
-  foo2[i, ] <- tips[hit2, ]
-  #store the tip rate value in the species vector
-  sp2[i] <- row.names(tips)[hit2]
-}
-#name the values of the tip rates based on the order of the species names
-row.names(foo2) <- sp2
-
-#
-tips <- foo2$Average
-names(tips) <- row.names(foo2)
+#create an empty tip rate vector
 tiprates <- c()
+#store the tip rates in a vector
+rates <- tips$tipRates
+#name the tip rate vector
+names(rates) <- tips$species
+#loop through tip rates and tip labels to make sure they are in the same order 
 for(i in 1:110){
-  tiprates[i] <- tips[which(names(tips) == trees.pruned[[1]]$tip.label[i])]
+  tiprates[i] <- rates[which(names(rates) == trees.pruned[[50]]$tip.label[i])]
 }
-names(tiprates) <- trees.pruned[[1]]$tip.label
+#name the newly ordered vector
+names(tiprates) <- trees.pruned[[50]]$tip.label
+#clean up environment
+rm(i, rates)
 #plot tree with bars
-plotTree.barplot(tree = trees.pruned[[1]],
-               x = tiprates,
+plotTree.barplot(tree = trees.pruned[[50]],
+                 x = tiprates + 1,
                lwd=4,
                args.plotTree = 
                  list(ftype = "off"),
                args.barplot = 
                  list(col = viridis(2, option= "G", 
-                                    end = 0.6)[datalist[[1]]$range.size + 1],
+                                    end = 0.6)[tips$range.size + 1],
                       xlab = "Chromosome Number Tip Rates"),
-               args.axis = list(at = seq(0,300, by = 50)))
-legend(x = "right", 
+               args.axis = list(at = seq(0,400, by = 100)))
+legend(x = "topright", 
        legend = c("Large Range Size", "Small Range Size"), 
        pch = 22, 
        pt.cex = 2, 

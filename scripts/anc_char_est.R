@@ -93,7 +93,7 @@ rm(i, x)
 ###MAKE LIKELIHOOD FUNCTION###--------------------------------------------------
 
 #store chrom.range
-chrom.range <- range(datalist[[52]]$hap.chrom) + c(-1, 1)
+chrom.range <- range(datalist[[50]]$hap.chrom) + c(-1, 1)
 
 p.mat <- list()
 #run datatoMatrix function necessary for diversitree likelihood function
@@ -107,15 +107,15 @@ for(i in 1:100){
 #strict = T allows for missing states
 #control (ode) = uses an ODE based approach to compute only the k variables over
 #time; more efficient when k is large
-lk.mk <- make.mkn(trees.pruned[[52]], states = p.mat[[52]],
-                  k = ncol(p.mat[[52]]), strict = F,
+lk.mk <- make.mkn(trees.pruned[[50]], states = p.mat[[50]],
+                  k = ncol(p.mat[[50]]), strict = F,
                   control = list(method = "ode"))
 
 ###CONSTRAIN LIKELIHOOD FUNCTION###---------------------------------------------
 
 #constrain the likelihood function to remove states that are not biologically
 #realistic
-con.lik <- constrainMkn(data = p.mat[[52]],
+con.lik <- constrainMkn(data = p.mat[[50]],
                         lik = lk.mk,
                         polyploidy = F,
                         hyper = T,
@@ -149,9 +149,9 @@ parMat[parMat == 8] <- mean(chromplus$tran12)
 parMat[parMat == 9] <- mean(chromplus$tran21)
 
 #rename the columns so that states now start from 1
-states <- 1:ncol(p.mat[[52]])
-names(states) <- colnames(p.mat[[52]])
-colnames(parMat) <- rownames(parMat) <- colnames(p.mat[[52]]) <- states
+states <- 1:ncol(p.mat[[50]])
+names(states) <- colnames(p.mat[[50]])
+colnames(parMat) <- rownames(parMat) <- colnames(p.mat[[50]]) <- states
 
 #make row sum to 0
 for(i in 1:nrow(parMat)){
@@ -159,25 +159,25 @@ for(i in 1:nrow(parMat)){
 }
 
 #choose a single tree to use in ancestral character estimation
-tree <- trees.pruned[[52]]
+tree <- trees.pruned[[50]]
 
 #sort p.mat to match with the tree tip order
-p.mat[[52]] <- p.mat[[52]][tree$tip.label,]
+p.mat[[50]] <- p.mat[[50]][tree$tip.label,]
 #sort MCMC data to match with the tree tip order
-rownames(datalist[[52]]) <- datalist[[52]]$species
-datalist[[52]] <- datalist[[52]][tree$tip.label, ]
+rownames(datalist[[50]]) <- datalist[[50]]$species
+datalist[[50]] <- datalist[[50]][tree$tip.label, ]
 
 #get the ancestral states
 asr <- asr_mk_model(tree = tree, 
                     tip_states = NULL, 
-                    tip_priors = p.mat[[52]],
+                    tip_priors = p.mat[[50]],
                     transition_matrix = parMat,
                     Nstates = ncol(parMat),
                     include_ancestral_likelihoods = T,
                     root_prior = "empirical")
 
 # make states
-rng <- range(datalist[[52]]$hap.chrom) + c(-2,2)
+rng <- range(datalist[[50]]$hap.chrom) + c(-2,2)
 chrom.states <- as.data.frame(matrix(data = NA,
                                      nrow = length(rng[1]:rng[2]) * 2,
                                      ncol = 3))
@@ -223,7 +223,7 @@ dat.tips <- as.data.frame(matrix(data = NA,
 colnames(dat.tips) <- c("tip", "chrom")
 for(i in 1:Ntip(tree)){
   dat.tips$tip[i] <- i
-  dat.tips$chrom[i] <- datalist[[52]]$hap.chrom[datalist[[52]]$species == tree$tip.label[i]]
+  dat.tips$chrom[i] <- datalist[[50]]$hap.chrom[datalist[[50]]$species == tree$tip.label[i]]
 }
 # get the branch specific rates
 branch.rates <- as.data.frame(matrix(data = NA,
@@ -293,108 +293,9 @@ for(i in 1:nrow(tree$edge)){
     counter <- counter + 1
   }
 }
-datalist[[52]]$tipRates <- tip.branches[,3]
-datalist[[52]]$tipRates
+datalist[[50]]$tipRates <- tip.branches[,3]
+datalist[[50]]$tipRates
+write <- datalist[[50]]
 
-# plot tree with branches
-# load helper functions
-source("helper.functions.R")
-scale <- 0.01
-plotTree.wBars(tree = tree,
-               x = setNames(dat.pruned$tipRates, dat.pruned$species),
-               type = "fan",
-               col = c("red","blue")[(dat.pruned$range.size + 1)],
-               border = NA,
-               lwd = 1,
-               scale = scale,
-               width = 0.005,
-               color = setNames(c("black","black","black",viridis(1,direction = -1)),
-                                c(0,1,2,3)))
-radi <- getRadius(scale = 0.01,
-                  width = 1,
-                  tree = tree,
-                  tip.labels = FALSE,
-                  trait.values = dat.pruned$tipRates,
-                  classes = 5)
-
-#plot circles
-draw.circle(x = 0,
-            y = 0,
-            radius = radi,
-            nv=100,
-            border="gray",
-            col=NA,
-            lty=2,
-            density=NULL,
-            angle=45,
-            lwd=1)
-# add corresponding rate class for each rate
-text(x = radi,
-     y = rep(0, length(radi)),
-     labels = names(radi),
-     srt = -90, 
-     cex = 0.7)
-
-# add legend
-text(x = max(radi),
-     y = max(radi),
-     labels = "Binary trait",
-     pos = 4,
-     cex = .9)
-
-xPoints <- max(radi)
-
-points(x = rep(xPoints,2),
-       y = c(xPoints - xPoints * 0.05,
-             xPoints - xPoints * 0.1),
-       pch = 16,
-       col = c("blue","red"))
-text(x = rep(xPoints,2),
-     y = c(xPoints - xPoints * 0.05,
-           xPoints - xPoints * 0.1),
-     labels = c("Large RS", "Red RS"),
-     pos = 4,
-     cex = 0.8)
-
-# log transformed dodged bar plot
-ggplot(dat.pruned, aes(x = log(tipRates), 
-                     fill = as.factor(range.size))) +
-  geom_histogram(position = "dodge2",
-                 binwidth = 0.25) +
-  scale_fill_discrete("Range Size",
-                      labels = c("Small", "Large"), 
-                      type = c("#f1a340","#998ec3")) +
-  xlab(expression(paste("Species rate ", "(MY"^-1,")"))) + 
-  ylab("Count") + 
-  scale_x_continuous(breaks = log(c(0.01,0.1,1,10,100,1000)), 
-                     labels = c(0.01,0.1,1,10,100,1000)) +
-  theme_bw()
-
-
-# log transformed with zero rates dodged bar plot
-ggplot(dat.pruned, aes(x = log(tipRates + 1), 
-                     fill = as.factor(range.size))) +
-  geom_histogram(position = "dodge2",
-                 binwidth = 0.25) +
-  scale_fill_discrete("Range Size",
-                      labels = c("Small", "Large"), 
-                      type = c("#f1a340","#998ec3")) +
-  xlab(expression(paste("Species rate ", "(MY "^-1,")"))) + 
-  ylab("Count") + 
-  scale_x_continuous(breaks = log(c(0.01,0.1,1,10,100,1000)), 
-                     labels = c(0.01,0.1,1,10,100,1000)) +
-  theme_bw()
-
-# square root transformed dodged bar plot
-ggplot(dat.pruned, aes(x = sqrt(tipRates), 
-                     fill = as.factor(range.size))) +
-  geom_histogram(position = "dodge2",
-                 binwidth = 0.25) +
-  scale_fill_discrete("Range Size",
-                      labels = c("Small", "Large"), 
-                      type = c("#f1a340","#998ec3")) +
-  xlab(expression(paste("Species rate ", "(MY "^ -1,")"))) + 
-  ylab("Count") + 
-  scale_x_continuous(breaks = c(0,1,2,3,4,5,6,7,8,9,10,11,12), 
-                     labels = c(0,1,4,9,16,25,36,49,64,81,100,121,144)) +
-  theme_bw()
+#save 
+write.csv(write, "../results/rates.csv")
