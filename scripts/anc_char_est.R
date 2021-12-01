@@ -40,7 +40,7 @@ colnames(dat.pruned)[3] <- "hap.chrom"
 # TODO columns are out of order lets fix them immediately
 dat.pruned <- dat.pruned[, c(1, 3, 2)]
 
-#this loop creates 100 datasets, sampling a chromosome number for each species 
+#this loop creates 100 datasets, sampling a chromosome number for each species
 #when there is more than one
 datalist <- list()
 for(j in 1:100){
@@ -71,7 +71,7 @@ for(i in 1:100){
   # pusa
   if(i == 52){
     cur.tree <- multi2di(cur.tree)
-    
+
   }
   cur.tree$edge.length <-  cur.tree$edge.length / max(branching.times(cur.tree))
   trees.pruned[[i]] <- cur.tree
@@ -119,7 +119,7 @@ con.lik <- constrainMkn(data = p.mat[[50]],
                         lik = lk.mk,
                         polyploidy = F,
                         hyper = T,
-                        verbose = T, 
+                        verbose = T,
                         oneway = F,
                         constrain = list(drop.demi = T,
                                          drop.poly= T))
@@ -133,11 +133,11 @@ parMat <- con.lik[[2]]
 #not interested in all of the rates, discard those not needed from table
 parMat[!(parMat %in% c(1,2,3,4,8,9))] <- 0
 
-# rate1 ascending aneuploidy - state1 
-# rate2 descending aneuploidy - state1 
-# rate3 ascending aneuploidy - state2 
-# rate4 descending aneuploidy - state2 
-# rate8 transitions from 1 to 2 for hyperstate 
+# rate1 ascending aneuploidy - state1
+# rate2 descending aneuploidy - state1
+# rate3 ascending aneuploidy - state2
+# rate4 descending aneuploidy - state2
+# rate8 transitions from 1 to 2 for hyperstate
 # rate9 transitions from 2 to 1 for hyperstate
 
 #fill the q matrix
@@ -168,15 +168,36 @@ rownames(datalist[[50]]) <- datalist[[50]]$species
 datalist[[50]] <- datalist[[50]][tree$tip.label, ]
 
 #get the ancestral states
-asr <- asr_mk_model(tree = tree, 
-                    tip_states = NULL, 
-                    tip_priors = p.mat[[50]],
-                    transition_matrix = parMat,
-                    Nstates = ncol(parMat),
+
+foo <- rcoal(10)
+tipstates <- sample(6:10, 10, replace=T)
+names(tipstates) <- foo$tip.label
+ratemodel <- matrix(0,5,5)
+ratemodel[1,2] <-
+  ratemodel[2,3] <-
+  ratemodel[3,4] <-
+  ratemodel[4,5] <- 1
+ratemodel[2,1] <-
+  ratemodel[3,2] <-
+  ratemodel[4,3] <-
+  ratemodel[5,4] <- 2
+
+asr <- asr_mk_model(tree = foo,
+                    tip_states = tipstates-5,
+                    tip_priors = NULL,
+                    rate_model = ratemodel ,
+                    Nstates = ncol(ratemodel),
                     include_ancestral_likelihoods = T,
                     root_prior = "empirical")
+nodevals <- asr$ancestral_likelihoods
+anc.states <- c()
+for(i in 1:nrow(nodevals)){
+  anc.states[i] <- which.max(as.vector(nodevals[i,]))
+}
+anc.states <- anc.states + 5 - 1
+  nodelabels(anc.states)
 
-# make states
+  # make states
 rng <- range(datalist[[50]]$hap.chrom) + c(-2,2)
 chrom.states <- as.data.frame(matrix(data = NA,
                                      nrow = length(rng[1]:rng[2]) * 2,
@@ -187,11 +208,11 @@ chrom.states$chroms <- rep(rng[1]:rng[2], 2)
 chrom.states$binary <- rep(c(1,0), each = length(rng[1]:rng[2]))
 
 for(i in 1:nrow(chrom.states)){
-  if (nrow(chrom.states) < 100) 
+  if (nrow(chrom.states) < 100)
     pad <- 2
-  if (nrow(chrom.states) >= 100) 
+  if (nrow(chrom.states) >= 100)
     pad <- 3
-  if (nrow(chrom.states) < 10) 
+  if (nrow(chrom.states) < 10)
     pad <- 1
   chrom.states$state[i] <- sprintf(paste("%0", pad, "d", sep = ""),i)
 }
@@ -205,9 +226,9 @@ for(i in 1:nrow(node.chroms)){
   node.chroms$node[i] <- i + Ntip(tree)
   poss.state <- which.max(asr$ancestral_likelihoods[i,])
   if(length(poss.state) > 1){
-    node.chroms$state[i] <- sample(poss.state,1) 
+    node.chroms$state[i] <- sample(poss.state,1)
   }else{
-    node.chroms$state[i] <- poss.state     
+    node.chroms$state[i] <- poss.state
   }
 }
 
@@ -297,5 +318,5 @@ datalist[[50]]$tipRates <- tip.branches[,3]
 datalist[[50]]$tipRates
 write <- datalist[[50]]
 
-#save 
+#save
 write.csv(write, "../results/rates.csv")
