@@ -1,4 +1,4 @@
-#testing carnivore chromosome data and range size in chromePlus
+#plotting carnivore chromosome data and range size in chromePlus
 
 ###LOAD IN PACKAGES###----------------------------------------------------------
 #load in packages needed to run analysis
@@ -68,37 +68,27 @@ datalist$range.size <- as.numeric(datalist$range.size >= x)
 #rm old data and clean up environment
 rm(i, missing, chroms, dat.pruned, range, hit, x)
 
-#read in chromeplus data
-chromplus <- read.csv("../results/carn.med.hb.csv")
+#load in the tip rate data
+tips <- read.csv("../results/tiprates.csv", row.names = 1)
 
-###MAKE Q MATRIX###-------------------------------------------------------------
-#store chrom.range
-chrom.range <- range(datalist$hap.chrom) + c(-1, 1)
+#plot the tip rate data
+barplot(height = tips$x + 0.025,
+        col = c("#FDE725FF", "#39568CFF")[datalist$range.size + 1],
+        horiz = T,
+        xlim = c(0,3),
+        xlab = "Tip Rates")
 
-p.mat <- list()
-#run datatoMatrix function necessary for diversitree likelihood function
-p.mat <- datatoMatrix(x=datalist, range = chrom.range, hyper = T)
+#add a legend to the plot
+legend(x = "topright", 
+       legend = c("Small Range Size", "Large Range Size"), 
+       pch = 22, 
+       pt.cex = 2, 
+       box.col = "transparent", 
+       pt.bg = c("#FDE725FF", "#39568CFF"))
 
-#get the ancestral states
-source("helperfunctions.R")
+#export as PDF 8.5"x11"
 
-#create Q matrix from given data
-Q <- getQ(data = p.mat,
-          hyper = T,
-          polyploidy = F)
 
-#fill in the Q matrix with data from chromplus
-Qfilled <- fillQ(data = p.mat,
-                 Q = Q,
-                 hyper = T,
-                 polyploidy = F)
 
-#calculate tip rates given the probability and Q matrix
-tiprates <- GetTipRates(tree = tree,
-                        Q = Qfilled,
-                        tip.states = NULL,
-                        tip.probability = p.mat,
-                        hyper = T)
 
-#write out the results for plotting later
-write.csv(tiprates, "../results/tiprates.csv")
+

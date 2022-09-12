@@ -1,5 +1,5 @@
 # This function will generate a Q matrix which has all the parameters that 
-# describes chromosoe number evolution
+# describes chromosome number evolution
 getQ <- function (data = NULL, 
                   hyper = NULL,
                   polyploidy = NULL) {

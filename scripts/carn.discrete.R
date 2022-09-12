@@ -1,4 +1,3 @@
-
 #read in the csv file with data
 range <- read.csv("calc.carn.range.sizes.csv")
 #look at a histagram of the data

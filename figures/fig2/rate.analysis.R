@@ -38,12 +38,12 @@ hpd <- data.frame(X = c(HPDinterval(as.mcmc(dat$rate[dat$type=="fission"]))[1,],
 #plot the rates along with the HPD for fission and fusion
 ggplot(dat, aes(x=rate)) +
   geom_density(aes(fill=as.factor(type),y=..density..),
-               stat="density", position="identity", alpha=0.35) +
+               stat="density", position="identity", alpha=0.75) +
   geom_line(data=hpd, aes(x=X, y=Y, color=types),
             alpha=0.45, size=1.4, lineend="round") +
   geom_vline(xintercept=0, linetype="dashed", color="grey40") +
-  scale_fill_viridis_d(option="G", end=.6)+
-  scale_color_viridis_d(option="G", end=.6)+
+  scale_fill_manual(values = c("#FDE725FF", "#39568CFF"))+
+  scale_color_manual(values = c("#FDE725FF", "#39568CFF"))+
   guides(fill=guide_legend(title="parameter"),
          color="none") +
   xlab("rate difference (per MY)\n small - large range size") +

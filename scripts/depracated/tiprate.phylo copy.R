@@ -64,7 +64,7 @@ rm(trees, trees.pruned)
 #load in tip rate data
 tips <- read.csv("../results/tip.rates.csv", row.names = 1)
 #subset out columns that we need
-tips <- tips[100]
+tips <- tips[101]
 
 #this loop will make sure the tip labels and the chromosome data are in the
 #same order
