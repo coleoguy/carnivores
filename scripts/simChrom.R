@@ -109,49 +109,14 @@ for(i in 1:100){
                                limits=c(1,100), 
                                model="ChromPlus" )
 }
-#create vector to store the variance of simChrom results
-chrom.variance <- c()
-#loop through to calculate variance in simChrom results
+
+#create vector to store the simulated chromosme numbers from simChrom 
+chroms <- data.frame(matrix(nrow = 110, ncol = 100))
+#loop through to store the simulated chromosme numbers from each simulation
 for(i in 1:100){
-  chrom.variance[i] <- var(results.sim[[i]]$chrom.num)
+  chroms[i] <- results.sim[[i]]$chrom.num
 }
 
-#load in chromosome data
-chroms.num <- read.csv("../data/chroms.csv")
-#load in range size
-range.num <- read.csv("../data/calc.carn.range.sizes.csv")
-
-
-
-
-
-
-
-hap.chrom <- c()
-for(i in 1:nrow(range.num)){
-    hit <- which(chroms.num$species == range.num$X[i])
-    if(length(hit) > 1){
-      hit <- sample(hit, 1)
-    }
-    hap.chrom[i] <- chroms.num[hit, 2]
-  }
-
-
-emp.var <- var(hap.chrom)
-
-plot(y=rep(1,))
-
-
-
-
-
-hist(chrom.variance)
-plot(density(chrom.variance),
-     xlim = c(-0.01, 40))
-abline(v = emp.var, col = "red")
-
-
-
-
-
+#write out the results of the chromosome number simulation
+write.csv(chroms, "../results/simulation_chroms.csv")
 

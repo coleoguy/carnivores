@@ -71,9 +71,24 @@ rm(i, missing, chroms, dat.pruned, range, hit, x)
 #load in the tip rate data
 tips <- read.csv("../results/tiprates.csv", row.names = 1)
 
+
+#loop to prune the chromsome number to those in the final chromosome number
+#dataset
+m <- matrix(nrow = 110, ncol = 3)
+datalist.ordered <- data.frame(m)
+for(i in 1:nrow(datalist)){
+  hit <- which(datalist$species == rownames(tips)[i])
+  datalist.ordered[i, ] <- datalist[hit, ]
+}
+
+#bind in the tip rates in the appropriate order
+all_data_order <- cbind(datalist.ordered, tips)
+colnames(all_data_order) <- c("species", "hap.chrom", "range.size", "tip.rate")
+
+
 #plot the tip rate data
-barplot(height = tips$x + 0.025,
-        col = c("#FDE725FF", "#39568CFF")[datalist$range.size + 1],
+barplot(height = all_data_order$tip.rate + 0.025,
+        col = c("#FDE725FF", "#39568CFF")[all_data_order$range.size + 1],
         horiz = T,
         xlim = c(0,3),
         xlab = "Tip Rates")
