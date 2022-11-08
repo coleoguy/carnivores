@@ -90,13 +90,28 @@ for(i in 1:100){
   x <- median(datalist[[1]]$range.size)
   datalist[[i]]$range.size <- as.numeric(datalist[[1]]$range.size >= x)
 }
+
 #0 = small; 1 = large pop size
 rm(i, x)
 
-#write out the data lists that were created 
-for(i in 1:100){
-  write.csv(datalist[[i]], 
-            file = paste("../data/data_sets/dataset",i,".csv", sep = ""))
+###ORDER TREE AND DATA###-------------------------------------------------------
+#loop through to make sure all of the datalists are in the same order as each
+#of the trees
+for(i in 1:length(datalist)){
+  #empty vector to store correct order in 
+  neworder <- c()
+  #loop through to store the correct order of the data to match the tree tips
+  for(j in 1:length(trees.pruned[[i]]$tip.label)){
+    neworder[j] <- which(trees.pruned[[i]]$tip.label[j] == datalist[[i]]$species)
+  }
+  #reorder the data into a new data frame
+  datalist[[i]] <- datalist[[i]][neworder,]
 }
+
+#remove variables that aren't needed anymore
+rm(i, j, neworder, trees.pruned, tree.depths)
+
+#write out the environment to store the data lists 
+save.image("~/Documents/GitHub/carnivores/data/datalists_range.RData")
 
 
