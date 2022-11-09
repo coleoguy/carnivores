@@ -1,4 +1,4 @@
-# Heath Blackmon
+# Michelle Jonika
 # 10 November
 # This code makes the figure for the analysis of chromosome number in
 # carnivores
@@ -18,7 +18,7 @@ ggtheme <- theme_bw() + theme(panel.grid.major = element_blank(),
                               legend.text = element_text(colour="grey30"))
 
 #read in chromplus data
-dat <- read.csv("../results/carn.med.hb.csv")
+dat <- read.csv("../results/rangesize.csv")
 #format data in long format
 longdat <- data.frame(c(dat$asc2-dat$asc1,
                         dat$desc2-dat$desc1),

@@ -70,7 +70,7 @@ temp <- mcmc(lik = con.lik,
              x.init = runif(6, 0, 1),
              prior = prior,
              w = 10,
-             nsteps = 300,
+             nsteps = 500,
              upper = 20,
              lower = 0)
 
@@ -87,8 +87,8 @@ registerDoMC(detectCores(all.tests = T) - 3)
 
 #create empty list to store results
 result <- list()
-#set iter to 300 for the number of steps to take in the model
-iter <- 300
+#set iter to 500 for the number of steps to take in the model
+iter <- 500
 
 
 # we will loop through all 100 trees
@@ -181,7 +181,7 @@ for(i in uncon){
 
 ##### Processing results #########
 #only process post burn-in results
-post.burn <- x[[1]][201:300, 2:8]
+post.burn <- x[[1]][451:500, 2:8]
 #transform the post burn in results back into MY from the tree depths
 post.burn[,1:6] <- post.burn[,1:6]/tree.depths[1,2]
 
@@ -193,7 +193,7 @@ for(i in 2:100){
   temp[,2:7] <- temp[,2:7]/tree.depths[i,2]
   ##bind in post-burn-in samples from each ttree after they have been back 
   #transformed
-  post.burn <- rbind(post.burn, temp[201:300,2:8])
+  post.burn <- rbind(post.burn, temp[451:500,2:8])
 }
 
 #save the results output

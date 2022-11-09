@@ -25,7 +25,7 @@ chroms <- read.csv("../data/chroms.csv")
 chroms <- chroms[-6,]
 
 #load in range size
-range <- read.csv("../data/calc.carn.range.sizes.csv")
+range <- read.csv("../data/range_size.csv")
 #remove the row with the highest tip rate to drop from the data
 range <- range[-61,]
 #change column names to be informative
