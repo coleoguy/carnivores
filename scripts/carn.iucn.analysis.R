@@ -22,17 +22,17 @@ tree.depths <- read.csv("../data/treedepths.csv")
 prior <- make.prior.exponential(2)
 
 # from primary analysis we can get our w
-w <- c(0.6598417, 0.7470406, 4.915778, 4.435216, 2.065825, 2.17056)
+w <- c(14.44759, 12.13979, 16.06275, 14.23117, 2.477789, 3.194005)
 
 # register cores to use in parallel
-registerDoMC(detectCores(all.tests = T) - 3)
+registerDoMC(detectCores(all.tests = T) - 25)
 
 #create empty list to store results
 result <- list()
 #set iter to 500 for the number of steps to take in the model
 iter <- 500
 
-x <- foreach(i = 1:100) %dopar%{
+x1 <- foreach(i = 1:100) %dopar%{
   #store chrom.range
   chrom.range <- range(datalist[[52]]$hap.chrom) + c(-1, 1)
   #run datatoMatrix function necessary for diversitree likelihood function
@@ -56,6 +56,137 @@ x <- foreach(i = 1:100) %dopar%{
                       upper = 50,
                       lower = 0)
 }
+save(x1, file="trial1_iucn.Rdata")
+
+x2 <- foreach(i = 1:100) %dopar%{
+  #store chrom.range
+  chrom.range <- range(datalist[[52]]$hap.chrom) + c(-1, 1)
+  #run datatoMatrix function necessary for diversitree likelihood function
+  datalist[[i]] <- datatoMatrix(x=datalist[[i]], range = chrom.range, hyper = T)
+  
+  # make the basic likelihood function for the data
+  lk.mk <- make.mkn(trees[[i]], states = datalist[[i]],
+                    k = ncol(datalist[[i]]), strict = F,
+                    control = list(method = "ode"))
+  # now we constrain our model to be biologically realistic for
+  # chromosomes.
+  con.lk.mk<-constrainMkn(data = datalist[[i]], lik = lk.mk, hyper = T,
+                          polyploidy = F, verbose = F,
+                          constrain = list(drop.demi = T, drop.poly = T))
+  # now we are ready to run our inference run
+  result[[i]] <- mcmc(con.lk.mk,
+                      x.init = runif(6, 0, 10),
+                      prior = prior,
+                      w = w,
+                      nsteps = iter,
+                      upper = 50,
+                      lower = 0)
+}
+save(x2, file="trial2_iucn.Rdata")
+
+x3 <- foreach(i = 1:100) %dopar%{
+  #store chrom.range
+  chrom.range <- range(datalist[[52]]$hap.chrom) + c(-1, 1)
+  #run datatoMatrix function necessary for diversitree likelihood function
+  datalist[[i]] <- datatoMatrix(x=datalist[[i]], range = chrom.range, hyper = T)
+  
+  # make the basic likelihood function for the data
+  lk.mk <- make.mkn(trees[[i]], states = datalist[[i]],
+                    k = ncol(datalist[[i]]), strict = F,
+                    control = list(method = "ode"))
+  # now we constrain our model to be biologically realistic for
+  # chromosomes.
+  con.lk.mk<-constrainMkn(data = datalist[[i]], lik = lk.mk, hyper = T,
+                          polyploidy = F, verbose = F,
+                          constrain = list(drop.demi = T, drop.poly = T))
+  # now we are ready to run our inference run
+  result[[i]] <- mcmc(con.lk.mk,
+                      x.init = runif(6, 0, 10),
+                      prior = prior,
+                      w = w,
+                      nsteps = iter,
+                      upper = 50,
+                      lower = 0)
+}
+save(x3, file="trial3_iucn.Rdata")
+
+x4 <- foreach(i = 1:100) %dopar%{
+  #store chrom.range
+  chrom.range <- range(datalist[[52]]$hap.chrom) + c(-1, 1)
+  #run datatoMatrix function necessary for diversitree likelihood function
+  datalist[[i]] <- datatoMatrix(x=datalist[[i]], range = chrom.range, hyper = T)
+  
+  # make the basic likelihood function for the data
+  lk.mk <- make.mkn(trees[[i]], states = datalist[[i]],
+                    k = ncol(datalist[[i]]), strict = F,
+                    control = list(method = "ode"))
+  # now we constrain our model to be biologically realistic for
+  # chromosomes.
+  con.lk.mk<-constrainMkn(data = datalist[[i]], lik = lk.mk, hyper = T,
+                          polyploidy = F, verbose = F,
+                          constrain = list(drop.demi = T, drop.poly = T))
+  # now we are ready to run our inference run
+  result[[i]] <- mcmc(con.lk.mk,
+                      x.init = runif(6, 0, 10),
+                      prior = prior,
+                      w = w,
+                      nsteps = iter,
+                      upper = 50,
+                      lower = 0)
+}
+save(x4, file="trial4_iucn.Rdata")
+
+x5 <- foreach(i = 1:100) %dopar%{
+  #store chrom.range
+  chrom.range <- range(datalist[[52]]$hap.chrom) + c(-1, 1)
+  #run datatoMatrix function necessary for diversitree likelihood function
+  datalist[[i]] <- datatoMatrix(x=datalist[[i]], range = chrom.range, hyper = T)
+  
+  # make the basic likelihood function for the data
+  lk.mk <- make.mkn(trees[[i]], states = datalist[[i]],
+                    k = ncol(datalist[[i]]), strict = F,
+                    control = list(method = "ode"))
+  # now we constrain our model to be biologically realistic for
+  # chromosomes.
+  con.lk.mk<-constrainMkn(data = datalist[[i]], lik = lk.mk, hyper = T,
+                          polyploidy = F, verbose = F,
+                          constrain = list(drop.demi = T, drop.poly = T))
+  # now we are ready to run our inference run
+  result[[i]] <- mcmc(con.lk.mk,
+                      x.init = runif(6, 0, 10),
+                      prior = prior,
+                      w = w,
+                      nsteps = iter,
+                      upper = 50,
+                      lower = 0)
+}
+save(x5, file="trial5_iucn.Rdata")
+
+x6 <- foreach(i = 1:100) %dopar%{
+  #store chrom.range
+  chrom.range <- range(datalist[[52]]$hap.chrom) + c(-1, 1)
+  #run datatoMatrix function necessary for diversitree likelihood function
+  datalist[[i]] <- datatoMatrix(x=datalist[[i]], range = chrom.range, hyper = T)
+  
+  # make the basic likelihood function for the data
+  lk.mk <- make.mkn(trees[[i]], states = datalist[[i]],
+                    k = ncol(datalist[[i]]), strict = F,
+                    control = list(method = "ode"))
+  # now we constrain our model to be biologically realistic for
+  # chromosomes.
+  con.lk.mk<-constrainMkn(data = datalist[[i]], lik = lk.mk, hyper = T,
+                          polyploidy = F, verbose = F,
+                          constrain = list(drop.demi = T, drop.poly = T))
+  # now we are ready to run our inference run
+  result[[i]] <- mcmc(con.lk.mk,
+                      x.init = runif(6, 0, 10),
+                      prior = prior,
+                      w = w,
+                      nsteps = iter,
+                      upper = 50,
+                      lower = 0)
+}
+save(x6, file="trial6_iucn.Rdata")
 
 ##### Processing results #########
 #only process post burn-in results
