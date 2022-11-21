@@ -10,12 +10,15 @@ load("../results/iucn/trial3_iucn.Rdata")
 load("../results/iucn/trial4_iucn.Rdata")
 load("../results/iucn/trial5_iucn.Rdata")
 load("../results/iucn/trial6_iucn.Rdata")
+load("../results/iucn/trial7_iucn.Rdata")
+load("../results/iucn/trial8_iucn.Rdata")
+load("../results/iucn/trial9_iucn.Rdata")
 
 #create an empty 
 results <- list()
 
 #make a list of the replicates
-trials <- list(x1,x2,x3,x4,x5,x6)
+trials <- list(x1,x2,x3,x4,x5,x6,x7,x8,x9)
 
 #loop that retains the MCMC run with the highest final posterior probability
 for(i in 1:length(x1)){
@@ -25,7 +28,10 @@ for(i in 1:length(x1)){
             trials[[3]][[i]]$p[500],
             trials[[4]][[i]]$p[500],
             trials[[5]][[i]]$p[500],
-            trials[[6]][[i]]$p[500])
+            trials[[6]][[i]]$p[500],
+            trials[[7]][[i]]$p[500],
+            trials[[8]][[i]]$p[500],
+            trials[[9]][[i]]$p[500])
   #store the tree with the highest posterior probabiliyt for the ifinal dataset
   results[[i]] <- trials[[which.max(liks)]][[i]]
 }
