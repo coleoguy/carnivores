@@ -91,7 +91,6 @@ result <- list()
 #set iter to 500 for the number of steps to take in the model
 iter <- 500
 
-
 # we will loop through all 100 trees
 # fitting model
 x1 <- foreach(i = 1:100) %dopar%{
@@ -232,11 +231,9 @@ uncon <- c()
 for(i in 1:100){
   #looks at the mean rates of the two ascending rates from the model to see if 
   #they are less than 0
-  if(mean(x[[i]]$asc2[200:300])-mean(x[[i]]$asc1[200:300]) < 0){
+  if(mean(results[[i]]$asc2[451:500])-mean(results[[i]]$asc1[451:500]) < 0){
     #stores the current run that didn't meet convergence
     uncon <- c(uncon, i)
-    #runs that didn't meet convergence (29)
-    #4,14,16,19,20,27,28,29,30,34,38,41,42,49,50,53,55,58,61,66,67,69,75,76,79,81,88,96,100
   }
 }
 #loop that swaps rates between high and low pop to see if that impacts convergence
@@ -250,60 +247,11 @@ for(i in uncon){
                           polyploidy = F, verbose = F,
                           constrain = list(drop.demi = T, drop.poly = T))
   #likelihood value for original rates
-  found <- con.lk.mk(pars = as.numeric(x[[i]][300, 2:7]))
+  found <- con.lk.mk(pars = as.numeric(results[[i]][500, 2:7]))
   #likelihood value for swapped rates
-  tried <- con.lk.mk(pars = as.numeric(x[[i]][300, c(4,5,2,3,6,7)]))
+  tried <- con.lk.mk(pars = as.numeric(results[[i]][500, c(4,5,2,3,6,7)]))
   #print out the difference between the rate swapping
   print(tried - found)
-  #1: 10.65769
-  #2: 11.85909
-  #3: 12.84475
-  #4: 10.31322
-  #5: 11.93795
-  #6: 16.56795
-  #7: 20.91868
-  #8: 13.26349
-  #9: 9.032648
-  #10: 9.601858
-  #11: 17.70944
-  #12: 7.862768
-  #13: 13.93501
-  #14: 23.22894
-  #15: 8.381647
-  #16: 14.04385
-  #17: 20.81376
-  #18: 16.70518
-  #19: 14.529
-  #20: 13.19418
-  #21: 16.0233
-  #22: 13.11986
-  #23: 11.78891
-  #24: 13.78249
-  #25: 13.07813
-  #26: 13.55449
-  #27: 14.48879
-  #28: -10.61469
-  #29: 11.03922
 }
-
-##### Processing results #########
-#only process post burn-in results
-post.burn <- x[[1]][451:500, 2:8]
-#transform the post burn in results back into MY from the tree depths
-post.burn[,1:6] <- post.burn[,1:6]/tree.depths[1,2]
-
-#loop that organizes rates into a pretty table
-for(i in 2:100){
-  #pulls results for specific tree
-  temp <- x[[i]]
-  #transforms the rates back by their tree depths
-  temp[,2:7] <- temp[,2:7]/tree.depths[i,2]
-  ##bind in post-burn-in samples from each ttree after they have been back 
-  #transformed
-  post.burn <- rbind(post.burn, temp[451:500,2:8])
-}
-
-#save the results output
-write.csv(post.burn,file="../results/rangesize.csv")
 
 

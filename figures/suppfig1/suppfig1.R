@@ -8,12 +8,12 @@
 library(viridis)
 
 #load in each of the replicates
-load("../results/rangesize/trial1.Rdata")
-load("../results/rangesize/trial2.Rdata")
-load("../results/rangesize/trial3.Rdata")
-load("../results/rangesize/trial4.Rdata")
-load("../results/rangesize/trial5.Rdata")
-load("../results/rangesize/trial6.Rdata")
+load("../results/iucn/trial1_iucn.Rdata")
+load("../results/iucn/trial2_iucn.Rdata")
+load("../results/iucn/trial3_iucn.Rdata")
+load("../results/iucn/trial4_iucn.Rdata")
+load("../results/iucn/trial5_iucn.Rdata")
+load("../results/iucn/trial6_iucn.Rdata")
 
 #create an empty 
 results <- list()
