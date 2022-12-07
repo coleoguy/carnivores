@@ -1,4 +1,7 @@
-
+library(ape)
+library(chromePlus)
+library(castor)
+library(phytools)
 #set the seed
 set.seed(1)
 #make a tree
