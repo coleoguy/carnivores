@@ -278,7 +278,7 @@ GetTipRates <- function(tree = NULL,
   
   tiprates <- nodepulls <- c()
   for(i in 1:length(tree$tip.label)){
-    nodepulls[i] <- getParent(tree, nodes[i])-length(tree$tip.label)
+    nodepulls[i] <- getParent(tree, nodes[i])#-length(tree$tip.label)
   }
   
   if(hyper == T && tipConversion == T){

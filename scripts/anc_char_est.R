@@ -38,15 +38,31 @@ source("helperfunctions.R")
 tiprates <- list()
 for(i in 1:length(p.mat)){
   #create Q matrix from given data
-  Q <- getQ(data = p.mat[[i]],
+  Q <- getQ(data = p.mat[[1]],
             hyper = T,
             polyploidy = F)
   
   #fill in the Q matrix with data from chromplus
-  Qfilled <- fillQ(data = p.mat[[i]],
+  Qfilled <- fillQ(data = p.mat[[1]],
                    Q = Q,
                    hyper = T,
                    polyploidy = F)
+  
+  
+  # here there are rates that we are not interested at
+  # discard them from the table
+  Q[!(Q %in% c(1,2,3,4,8,9))] <- 0
+  
+  # fill the qmat
+  Q[Q == 1] <- mean(chromplus$asc1)
+  Q[Q == 2] <- mean(chromplus$desc1)
+  Q[Q == 3] <- mean(chromplus$asc2)
+  Q[Q == 4] <- mean(chromplus$desc2)
+  Q[Q == 8] <- mean(chromplus$tran12)
+  Q[Q == 9] <- mean(chromplus$tran21)
+  
+  # fill the diagonal so that row sums are zero
+  diag(Q) <- -rowSums(Q)
   
   #calculate tip rates given the probability and Q matrix
   tiprates[[i]] <- GetTipRates(tree = trees[[i]],

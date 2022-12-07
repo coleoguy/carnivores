@@ -36,6 +36,62 @@ for(i in 1:length(x1)){
   results[[i]] <- trials[[which.max(liks)]][[i]]
 }
 
+#assign variable to store those runs that don't converge
+uncon2 <- c()
+#loops through to identify runs that have a low probability and don't reach 
+#convergence
+for(i in 1:100){
+  #looks at the mean rates of the two ascending rates from the model to see if 
+  #they are less than 0
+  if(mean(x1[[i]]$asc2[451:500])-mean(x1[[i]]$asc1[451:500]) < 0){
+    #stores the current run that didn't meet convergence
+    uncon <- c(uncon, i)
+  }
+}
+
+#loop that swaps rates between high and low pop to see if that impacts convergence
+result.uncon <- c()
+for(i in uncon){
+  j <- uncon[i]
+  
+  #store chrom.range
+  chrom.range <- range(datalist[[j]]$hap.chrom) + c(-1, 1)
+  #run datatoMatrix function necessary for diversitree likelihood function
+  datalist[[j]] <- datatoMatrix(x=datalist[[j]], range = chrom.range, hyper = T)
+  
+  #make the basic likelihood function for the data
+  lk.mk <- make.mkn(trees[[j]], states = datalist[[j]],
+                    k = ncol(datalist[[j]]), strict = F,
+                    control = list(method = "ode"))
+  
+  #constrain our model to be biologically realistic for chromosomes
+  con.lk.mk<-constrainMkn(data = datalist[[j]], lik = lk.mk, hyper = T,
+                          polyploidy = F, verbose = F,
+                          constrain = list(drop.demi = T, drop.poly = T))
+  
+  # now we are ready to run our inference run
+  result.uncon[[i]] <- mcmc(con.lk.mk,
+                      x.init =  runif(6, 0, 10),
+                      prior = prior,
+                      w = w,
+                      nsteps = iter,
+                      upper = 50,
+                      lower = 0)
+}
+
+#assign variable to store those runs that don't converge
+uncon2 <- c()
+#loops through to identify runs that have a low probability and don't reach 
+#convergence
+for(i in 1:100){
+  #looks at the mean rates of the two ascending rates from the model to see if 
+  #they are less than 0
+  if(mean(result.uncon[[i]]$asc2[451:500])-mean(result.uncon[[i]]$asc1[451:500]) < 0){
+    #stores the current run that didn't meet convergence
+    uncon2 <- c(uncon2, i)
+  }
+}
+
 #load in the ttree depths to transform back into units of millions of years (MY)
 tree.depths <- read.csv("../data/treedepths.csv")
 
