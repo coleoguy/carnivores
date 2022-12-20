@@ -1,6 +1,6 @@
 # Michelle Jonika
 # 10 November
-#This code makes the supplemental lfigure showing our MCMC parameter space
+#This code makes the supplemental figure showing our MCMC parameter space
 #and the corresponding posterior proability associated with each parameter
 #space
 

@@ -225,15 +225,15 @@ save(x6, file="trial6.Rdata")
 # really are global optimum I first identified which runs these were
 
 #assign variable to store those runs that don't converge
-uncon <- c()
+uncon3 <- c()
 #loops through to identify runs that have a low probability and don't reach 
 #convergence
 for(i in 1:100){
   #looks at the mean rates of the two ascending rates from the model to see if 
   #they are less than 0
-  if(mean(results[[i]]$asc2[451:500])-mean(results[[i]]$asc1[451:500]) < 0){
+  if(mean(x3[[i]]$asc2[451:500])-mean(x3[[i]]$asc1[451:500]) < 0){
     #stores the current run that didn't meet convergence
-    uncon <- c(uncon, i)
+    uncon3 <- c(uncon3, i)
   }
 }
 #loop that swaps rates between high and low pop to see if that impacts convergence
@@ -247,9 +247,18 @@ for(i in uncon){
                           polyploidy = F, verbose = F,
                           constrain = list(drop.demi = T, drop.poly = T))
   #likelihood value for original rates
-  found <- con.lk.mk(pars = as.numeric(results[[i]][500, 2:7]))
+  found <- con.lk.mk(pars = as.numeric(x1[[i]][500, 2:7]))
   #likelihood value for swapped rates
-  tried <- con.lk.mk(pars = as.numeric(results[[i]][500, c(4,5,2,3,6,7)]))
+  tried <- con.lk.mk(pars = as.numeric(x1[[i]][500, c(4,5,2,3,6,7)]))
+  
+  # now we are ready to run our inference run
+  result[[i]] <- mcmc(con.lk.mk,
+                      x.init =  as.numeric(x1[[i]][500, c(4,5,2,3,6,7)]),
+                      prior = prior,
+                      w = w,
+                      nsteps = iter,
+                      upper = 50,
+                      lower = 0)
   #print out the difference between the rate swapping
   print(tried - found)
 }

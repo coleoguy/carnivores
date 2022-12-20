@@ -188,44 +188,4 @@ x6 <- foreach(i = 1:100) %dopar%{
 }
 save(x6, file="trial6_iucn.Rdata")
 
-##### Processing results #########
-#only process post burn-in results
-iucn <- x[[1]][451:500,]
-iucn[,2:7] <- iucn[,2:7]/tree.depths[1,2] 
-for(i in 2:100){
-  foo <- x[[i]][451:500,]
-  foo[,2:7] <- foo[,2:7]/tree.depths[i,2] 
-  iucn <- rbind(iucn, foo)
-}
-hist(iucn$asc1-iucn$asc2)
-hist(iucn$desc1-iucn$desc2)
-
-#save the results output
-write.csv(iucn,file="../results/carn.iucn.csv")
-
-
-
-#16.66098
-#22.29159
-#-19.81789
-#24.81584
-#23.93914
-#18.72708
-#17.01756
-#24.27797
-#21.50781
-#20.99101
-#19.27124
-#18.21687
-#24.32063
-#17.81695
-#26.69269
-#19.1164
-#20.69437
-#18.25843
-#18.57138
-#24.60471
-#18.60038
-#24.48164
-
 
