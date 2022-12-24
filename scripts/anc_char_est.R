@@ -33,7 +33,7 @@ for(i in 1:100){
 chromplus <- read.csv("../results/rangesize.csv")
 
 #get the ancestral states
-source("helperfunctions.R")
+source("getQ.function.R")
 
 tiprates <- list()
 for(i in 1:length(p.mat)){
@@ -41,13 +41,6 @@ for(i in 1:length(p.mat)){
   Q <- getQ(data = p.mat[[1]],
             hyper = T,
             polyploidy = F)
-  
-  #fill in the Q matrix with data from chromplus
-  Qfilled <- fillQ(data = p.mat[[1]],
-                   Q = Q,
-                   hyper = T,
-                   polyploidy = F)
-  
   
   # here there are rates that we are not interested at
   # discard them from the table
