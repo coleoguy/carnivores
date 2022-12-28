@@ -5,6 +5,7 @@
 library(phytools)
 library(chromePlus)
 library(castor)
+library(evobiR)
 
 ###LOAD IN DATA NEEDED###-------------------------------------------------------
 
@@ -59,9 +60,9 @@ for(i in 1:length(p.mat)){
   
   #calculate tip rates given the probability and Q matrix
   tiprates[[i]] <- GetTipRates(tree = trees[[i]],
-                          Q = Qfilled,
+                          Q = Q,
                           tip.states = NULL,
-                          tip.probability = p.mat[[i]],
+                          p.mat = p.mat[[i]],
                           hyper = T)
   
 }

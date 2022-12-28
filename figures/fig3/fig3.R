@@ -1,8 +1,11 @@
 #Michelle Jonika
-#September 7, 2021
+#December 27, 2022
 
-#creates a phylogenetic plot visualizing chromosome number and range size as a
+#creates a phylogenetic plot visualizing tip rates and range size as a
 #discrete trait
+
+#load in libraries needed
+library(phytools)
 
 ###LOAD IN DATA NEEDED###-------------------------------------------------------
 
@@ -19,39 +22,35 @@ tree <- trees[[1]]
 test <- untangle(tree, "read.tree")
 rm(trees, tree)
 
+#load in tip rate data
+tip_rates <- read.csv("../results/tiprates_new.csv")
+
+#put the data together
+all_data <- data.frame(datalist[[1]], tip_rates$Average)
 
 #loop through to make sure all of the datalists are in the same order as each
 #of the trees
 data_all <- c()
-for(i in 1:length(datalist[[1]])){
+for(i in 1:length(all_data)){
   #empty vector to store correct order in 
   neworder <- c()
   #loop through to store the correct order of the data to match the tree tips
   for(j in 1:length(test$tip.label)){
-    neworder[j] <- which(test$tip.label[j] == datalist[[1]]$species)
+    neworder[j] <- which(test$tip.label[j] == all_data$species)
   }
   #reorder the data into a new data frame
-  data_all <- datalist[[1]][neworder,]
+  data_all <- all_data[neworder,]
 }
-rm(datalist, i, j, neworder)
-
-#create a named vector with the chromosome data 
-data_chrom <- data_all$hap.chrom 
-names(data_chrom) <- data_all$species
-
-###PLOTTING###------------------------------------------------------
+rm(datalist, i, j, neworder, tip_rates, all_data)
 
 #make a plot of the chromosome nuber data
-plot(y = 1:110,
-     x = data_chrom, 
-     xlab = "Haploid Chromosome Number",
-     xlim = c(15, 40), 
+plot(y = 1:110, x = data_all$tip_rates.Average, 
+     xlab = "Tip Rates",
+     xlim = c(0,5.5), 
      pch = 21,
      cex = 0.9,
      col = "black",
      bg = c("#FDE725FF", "#39568CFF")[data_all$range.size + 1])
 
 #export as PDF 8.5"x11"
-
-
 

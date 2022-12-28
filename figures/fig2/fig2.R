@@ -4,13 +4,15 @@
 # carnivores with range size as the binary trait
 
 #load in libraries needed
-library(viridis)
 library(chromePlus)
 
 #read in chromplus data for range size
 data <- read.csv("../results/rangesize.csv")
+fission <- data[,4] - data[,2]
+fusion <- data[,5] - data[,3]
+data_munge <- data.frame(fission, fusion)
 
-plot.chromeplus(data = data,
+plotChromeplus(data = data_munge,
                 colors = c("#FDE725FF", "#39568CFF"),
                 x_title = "rate difference (per MY)\n small - large range size",
                 alpha_geom = 0.75,
