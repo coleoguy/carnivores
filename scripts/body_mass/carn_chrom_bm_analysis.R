@@ -10,14 +10,14 @@ library(doMC)
 ###LOAD IN DATA NEEDED###-------------------------------------------------------
 
 #load in chromosome number and binary trait data
-load("../data/body_mass/datalists_bodymass.RData")
+load("../../data/body_mass/datalists_bodymass.RData")
 #0 = small; 1 = large pop size
 
 #load in tree data
-trees <- read.nexus("../data/carnivora_bm_pruned.nex")
+trees <- read.nexus("../../data/body_mass/carnivora_bm_pruned.nex")
 
 #load in tree depths
-tree.depths <- read.csv("../data/bm_treedepths.csv")
+tree.depths <- read.csv("../../data/body_mass/bm_treedepths.csv")
 colnames(tree.depths) <- c("tree", "tree.depth")
 
 
@@ -89,7 +89,7 @@ registerDoMC(detectCores(all.tests = T) - 4)
 #create empty list to store results
 result <- list()
 #set iter to 500 for the number of steps to take in the model
-iter <- 500
+iter <- 1000
 
 # we will loop through all 100 trees
 # fitting model
@@ -112,7 +112,7 @@ x1 <- foreach(i = 1:100) %dopar%{
                       upper = 50,
                       lower = 0)
 }
-save(x1, file="../results/body_mass/trial1_bm.Rdata")
+save(x1, file="../../results/body_mass/trial1_bm.Rdata")
 
 ##### Checking for convergence ###########
 # After checking runs I found that some runs stayend in a low prob
