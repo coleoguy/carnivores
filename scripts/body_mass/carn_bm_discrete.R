@@ -10,4 +10,4 @@ median <- median(bm$AdultBodyMass_g, na.rm = T)
 bm[,3] <- bm[,2] < median
 #changes T/F to 1/0
 bm$V3[bm$V3 == "TRUE"] <- 1 
-write.csv(bm, "carn.bm.discrete.csv", row.names = F)
+write.csv(bm, "../data/body_mass/carn_bm_discrete.csv", row.names = F)

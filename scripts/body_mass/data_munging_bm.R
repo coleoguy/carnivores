@@ -23,7 +23,7 @@ for(i in 1:100){
 chroms <- read.csv("../data/chroms.csv")
 
 #load in range size
-bm <- read.csv("../data/body_mass.csv")
+bm <- read.csv("../data/body_mass/body_mass.csv")
 #change column names to be informative
 colnames(bm) <- c("species", "body.mass")
 
@@ -79,10 +79,10 @@ for(i in 1:100){
 rm(trees, cur.tree, i, j, missing, chroms, dat.pruned, bm, hit)
 
 #write out our pruned trees
-write.nexus(trees.pruned, file = "../data/carnivora_bm_pruned.nex")
+write.nexus(trees.pruned, file = "../data/body_mass/carnivora_bm_pruned.nex")
 
 #write out our prunned tree's tree depths
-write.csv(tree.depths, file = "../data/bm_treedepths.csv")
+write.csv(tree.depths, file = "../data/body_mass/bm_treedepths.csv")
 
 ###DISCRETIZE RANGE SIZES###----------------------------------------------------
 #discretize range size based on the median
@@ -112,6 +112,6 @@ for(i in 1:length(datalist)){
 rm(i, j, neworder, trees.pruned, tree.depths)
 
 #write out the environment to store the data lists 
-save.image("~/Documents/GitHub/carnivores/data/datalists_bodymass.RData")
+save.image("../data/body_mass/datalists_bodymass.RData")
 
 

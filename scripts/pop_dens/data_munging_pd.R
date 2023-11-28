@@ -23,14 +23,16 @@ for(i in 1:100){
 chroms <- read.csv("../data/chroms.csv")
 
 #load in range size
-range <- read.csv("../data/range_size.csv")
+pd <- read.csv("../data/pop_dens/pop_dens.csv")
+#subset out just the population density correction
+pd <- pd[,c(1,4)]
 #change column names to be informative
-colnames(range) <- c("species", "range.size")
+colnames(pd) <- c("species", "pop.dens")
 
 ###PRUNE DATA###----------------------------------------------------------------
 
 #prune chromosome number and combnine with range size
-dat.pruned <- range
+dat.pruned <- pd
 #add empty third column for chromosome number
 dat.pruned[, 3]  <- NA
 #name the third column
@@ -42,8 +44,8 @@ dat.pruned <- dat.pruned[, c(1, 3, 2)]
 #when there is more than one
 datalist <- list()
 for(j in 1:100){
-  for(i in 1:nrow(range)){
-    hit <- which(chroms$species == range$species[i])
+  for(i in 1:nrow(pd)){
+    hit <- which(chroms$species == pd$species[i])
     if(length(hit) > 1){
       hit <- sample(hit, 1)
     }
@@ -76,22 +78,22 @@ for(i in 1:100){
 }
 
 #rm old data and clean up environment
-rm(trees, cur.tree, i, j, missing, chroms, dat.pruned, range, hit)
+rm(trees, cur.tree, i, j, missing, chroms, dat.pruned, pd, hit)
 
 #write out our pruned trees
-write.nexus(trees.pruned, file = "../data/carnivorapruned.nex")
+write.nexus(trees.pruned, file = "../data/pop_dens/carnivora_pd_pruned.nex")
 
 #write out our prunned tree's tree depths
-write.csv(tree.depths, file = "../data/treedepths.csv")
+write.csv(tree.depths, file = "../data/pop_dens/pd_treedepths.csv")
 
 ###DISCRETIZE RANGE SIZES###----------------------------------------------------
 #discretize range size based on the median
 for(i in 1:100){
-  x <- median(datalist[[1]]$range.size)
-  datalist[[i]]$range.size <- as.numeric(datalist[[1]]$range.size >= x)
+  x <- median(datalist[[1]]$pop.dens)
+  datalist[[i]]$pop.dens <- as.numeric(datalist[[1]]$pop.dens >= x)
 }
 
-#0 = small; 1 = large pop size
+#0 = small body mass; 1 = large body mass
 rm(i, x)
 
 ###ORDER TREE AND DATA###-------------------------------------------------------
@@ -112,6 +114,6 @@ for(i in 1:length(datalist)){
 rm(i, j, neworder, trees.pruned, tree.depths)
 
 #write out the environment to store the data lists 
-save.image("~/Documents/GitHub/carnivores/data/datalists_range.RData")
+save.image("../data/pop_dens/datalists_popdens.RData")
 
 

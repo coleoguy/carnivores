@@ -32,4 +32,5 @@ par(mar=c(5.1,4.1,4.1,2.1))
 obj<-densityMap(s1[[100]],states=c("small RS","large RS"),plot=FALSE)
 plot(obj,lwd=4,outline=TRUE,fsize=c(0.7,0.9),legend=50)
 
+plot(s1[[1]])
 

@@ -10,14 +10,14 @@ library(doMC)
 ###LOAD IN DATA NEEDED###-------------------------------------------------------
 
 #load in chromosome number and binary trait data
-load("../data/datalists_popdens.RData")
+load("../data/range_size/datalists_rangesize.RData")
 #0 = small; 1 = large pop size
 
 #load in tree data
-trees <- read.nexus("../data/carnivora_pd_pruned.nex")
+trees <- read.nexus("../data/range_size/carnivora_rs_pruned.nex")
 
 #load in tree depths
-tree.depths <- read.csv("../data/pd_treedepths.csv")
+tree.depths <- read.csv("../data/range_size/rs_treedepths.csv")
 colnames(tree.depths) <- c("tree", "tree.depth")
 
 
@@ -84,7 +84,7 @@ w <- diff(sapply(tune[2:7],
 # w <- c(14.44759, 12.13979, 16.06275, 14.23117, 2.477789, 3.194005)
 
 # register cores to use in parallel
-registerDoMC(detectCores(all.tests = T) - 4)
+registerDoMC(detectCores(all.tests = T) - 25)
 
 #create empty list to store results
 result <- list()
@@ -112,7 +112,7 @@ x1 <- foreach(i = 1:100) %dopar%{
                       upper = 50,
                       lower = 0)
 }
-save(x1, file="trial1_pd.Rdata")
+save(x1, file="../results/range_size/trial1_rs.Rdata")
 
 x2 <- foreach(i = 1:100) %dopar%{
   # make the basic likelihood function for the data
@@ -133,7 +133,7 @@ x2 <- foreach(i = 1:100) %dopar%{
                       upper = 50,
                       lower = 0)
 }
-save(x2, file="trial2.Rdata")
+save(x2, file="../results/range_size/trial2_rs.Rdata")
 
 x3 <- foreach(i = 1:100) %dopar%{
   # make the basic likelihood function for the data
@@ -154,7 +154,7 @@ x3 <- foreach(i = 1:100) %dopar%{
                       upper = 50,
                       lower = 0)
 }
-save(x3, file="trial3.Rdata")
+save(x3, file="../results/range_size/trial3_rs.Rdata")
 
 x4 <- foreach(i = 1:100) %dopar%{
   # make the basic likelihood function for the data
@@ -175,7 +175,7 @@ x4 <- foreach(i = 1:100) %dopar%{
                       upper = 50,
                       lower = 0)
 }
-save(x4, file="trial4.Rdata")
+save(x4, file="../results/range_size/trial4_rs.Rdata")
 
 x5 <- foreach(i = 1:100) %dopar%{
   # make the basic likelihood function for the data
@@ -196,7 +196,7 @@ x5 <- foreach(i = 1:100) %dopar%{
                       upper = 50,
                       lower = 0)
 }
-save(x5, file="trial5.Rdata")
+save(x5, file="../results/range_size/trial5_rs.Rdata")
 
 x6 <- foreach(i = 1:100) %dopar%{
   # make the basic likelihood function for the data
@@ -217,7 +217,7 @@ x6 <- foreach(i = 1:100) %dopar%{
                       upper = 50,
                       lower = 0)
 }
-save(x6, file="trial6.Rdata")
+save(x6, file="../results/range_size/trial6_rs.Rdata")
 
 ##### Checking for convergence ###########
 # After checking runs I found that some runs stayend in a low prob
@@ -225,19 +225,19 @@ save(x6, file="trial6.Rdata")
 # really are global optimum I first identified which runs these were
 
 #assign variable to store those runs that don't converge
-uncon1 <- c()
+uncon3 <- c()
 #loops through to identify runs that have a low probability and don't reach 
 #convergence
 for(i in 1:100){
   #looks at the mean rates of the two ascending rates from the model to see if 
   #they are less than 0
-  if(mean(x1[[i]]$asc2[451:500])-mean(x1[[i]]$asc1[451:500]) < 0){
+  if(mean(x3[[i]]$asc2[451:500])-mean(x3[[i]]$asc1[451:500]) < 0){
     #stores the current run that didn't meet convergence
-    uncon1 <- c(uncon1, i)
+    uncon3 <- c(uncon3, i)
   }
 }
-#loop that swaps rates between high and low body mass to see if that impacts convergence
-for(i in uncon1){
+#loop that swaps rates between high and low pop to see if that impacts convergence
+for(i in uncon){
   #make the basic likelihood function for the data
   lk.mk <- make.mkn(trees[[i]], states = datalist[[i]],
                     k = ncol(datalist[[i]]), strict = F,

@@ -10,14 +10,14 @@ library(doMC)
 ###LOAD IN DATA NEEDED###-------------------------------------------------------
 
 #load in chromosome number and binary trait data
-load("../data/datalists_bodymass.RData")
+load("../data/pop_dens/datalists_popdens.RData")
 #0 = small; 1 = large pop size
 
 #load in tree data
-trees <- read.nexus("../data/carnivora_bm_pruned.nex")
+trees <- read.nexus("../data/pop_dens/carnivora_pd_pruned.nex")
 
 #load in tree depths
-tree.depths <- read.csv("../data/bm_treedepths.csv")
+tree.depths <- read.csv("../data/pop_dens/pd_treedepths.csv")
 colnames(tree.depths) <- c("tree", "tree.depth")
 
 
@@ -112,112 +112,7 @@ x1 <- foreach(i = 1:100) %dopar%{
                       upper = 50,
                       lower = 0)
 }
-save(x1, file="trial1_pd.Rdata")
-
-x2 <- foreach(i = 1:100) %dopar%{
-  # make the basic likelihood function for the data
-  lk.mk <- make.mkn(trees[[i]], states = datalist[[i]],
-                    k = ncol(datalist[[i]]), strict = F,
-                    control = list(method = "ode"))
-  # now we constrain our model to be biologically realistic for
-  # chromosomes.
-  con.lk.mk<-constrainMkn(data = datalist[[i]], lik = lk.mk, hyper = T,
-                          polyploidy = F, verbose = F,
-                          constrain = list(drop.demi = T, drop.poly = T))
-  # now we are ready to run our inference run
-  result[[i]] <- mcmc(con.lk.mk,
-                      x.init =  runif(6, 0, 10),
-                      prior = prior,
-                      w = w,
-                      nsteps = iter,
-                      upper = 50,
-                      lower = 0)
-}
-save(x2, file="trial2.Rdata")
-
-x3 <- foreach(i = 1:100) %dopar%{
-  # make the basic likelihood function for the data
-  lk.mk <- make.mkn(trees[[i]], states = datalist[[i]],
-                    k = ncol(datalist[[i]]), strict = F,
-                    control = list(method = "ode"))
-  # now we constrain our model to be biologically realistic for
-  # chromosomes.
-  con.lk.mk<-constrainMkn(data = datalist[[i]], lik = lk.mk, hyper = T,
-                          polyploidy = F, verbose = F,
-                          constrain = list(drop.demi = T, drop.poly = T))
-  # now we are ready to run our inference run
-  result[[i]] <- mcmc(con.lk.mk,
-                      x.init =  runif(6, 0, 10),
-                      prior = prior,
-                      w = w,
-                      nsteps = iter,
-                      upper = 50,
-                      lower = 0)
-}
-save(x3, file="trial3.Rdata")
-
-x4 <- foreach(i = 1:100) %dopar%{
-  # make the basic likelihood function for the data
-  lk.mk <- make.mkn(trees[[i]], states = datalist[[i]],
-                    k = ncol(datalist[[i]]), strict = F,
-                    control = list(method = "ode"))
-  # now we constrain our model to be biologically realistic for
-  # chromosomes.
-  con.lk.mk<-constrainMkn(data = datalist[[i]], lik = lk.mk, hyper = T,
-                          polyploidy = F, verbose = F,
-                          constrain = list(drop.demi = T, drop.poly = T))
-  # now we are ready to run our inference run
-  result[[i]] <- mcmc(con.lk.mk,
-                      x.init =  runif(6, 0, 10),
-                      prior = prior,
-                      w = w,
-                      nsteps = iter,
-                      upper = 50,
-                      lower = 0)
-}
-save(x4, file="trial4.Rdata")
-
-x5 <- foreach(i = 1:100) %dopar%{
-  # make the basic likelihood function for the data
-  lk.mk <- make.mkn(trees[[i]], states = datalist[[i]],
-                    k = ncol(datalist[[i]]), strict = F,
-                    control = list(method = "ode"))
-  # now we constrain our model to be biologically realistic for
-  # chromosomes.
-  con.lk.mk<-constrainMkn(data = datalist[[i]], lik = lk.mk, hyper = T,
-                          polyploidy = F, verbose = F,
-                          constrain = list(drop.demi = T, drop.poly = T))
-  # now we are ready to run our inference run
-  result[[i]] <- mcmc(con.lk.mk,
-                      x.init =  runif(6, 0, 10),
-                      prior = prior,
-                      w = w,
-                      nsteps = iter,
-                      upper = 50,
-                      lower = 0)
-}
-save(x5, file="trial5.Rdata")
-
-x6 <- foreach(i = 1:100) %dopar%{
-  # make the basic likelihood function for the data
-  lk.mk <- make.mkn(trees[[i]], states = datalist[[i]],
-                    k = ncol(datalist[[i]]), strict = F,
-                    control = list(method = "ode"))
-  # now we constrain our model to be biologically realistic for
-  # chromosomes.
-  con.lk.mk<-constrainMkn(data = datalist[[i]], lik = lk.mk, hyper = T,
-                          polyploidy = F, verbose = F,
-                          constrain = list(drop.demi = T, drop.poly = T))
-  # now we are ready to run our inference run
-  result[[i]] <- mcmc(con.lk.mk,
-                      x.init =  runif(6, 0, 10),
-                      prior = prior,
-                      w = w,
-                      nsteps = iter,
-                      upper = 50,
-                      lower = 0)
-}
-save(x6, file="trial6.Rdata")
+save(x1, file="../results/pop_dens/trial1_pd.Rdata")
 
 ##### Checking for convergence ###########
 # After checking runs I found that some runs stayend in a low prob

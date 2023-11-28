@@ -7,7 +7,7 @@
 library(chromePlus)
 
 #read in chromplus data for range size
-data <- read.csv("../results/initial_bm.csv")
+data <- read.csv("../results/body_mass/initial_bm.csv")
 fission <- data[,4] - data[,2]
 fusion <- data[,5] - data[,3]
 data_munge <- data.frame(fission, fusion)
