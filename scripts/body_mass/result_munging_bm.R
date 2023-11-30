@@ -34,7 +34,7 @@ for(i in 1:length(x1)){
 tree.depths <- read.csv("../data/body_mass/bm_treedepths.csv")
 
 #only process post burn-in results
-post.burn <- x1[[1]][900:1000, 2:8]
+post.burn <- x1[[1]][950:1000, 2:8]
 
 #transform the post burn in results back into MY from the tree depths
 post.burn[,1:6] <- post.burn[,1:6]/tree.depths[1,2]
@@ -47,7 +47,7 @@ for(i in 2:100){
   temp[,2:7] <- temp[,2:7]/tree.depths[i,2]
   ##bind in post-burn-in samples from each ttree after they have been back 
   #transformed
-  post.burn <- rbind(post.burn, temp[451:500,2:8])
+  post.burn <- rbind(post.burn, temp[950:1000,2:8])
 }
 
 #save the results output
