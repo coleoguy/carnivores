@@ -26,7 +26,7 @@ for(i in 1:length(x1)){
             trials[[4]][[i]]$p[500],
             trials[[5]][[i]]$p[500],
             trials[[6]][[i]]$p[500])
-  #store the tree with the highest posterior probabiliyt for the ifinal dataset
+  #store the tree with the highest posterior probabiliyt for the final dataset
   results[[i]] <- trials[[which.max(liks)]][[i]]
 }
 
@@ -34,7 +34,7 @@ for(i in 1:length(x1)){
 tree.depths <- read.csv("../data/body_mass/bm_treedepths.csv")
 
 #only process post burn-in results
-post.burn <- x1[[1]][950:1000, 2:8]
+post.burn <- results[[1]][950:1000, 2:8]
 
 #transform the post burn in results back into MY from the tree depths
 post.burn[,1:6] <- post.burn[,1:6]/tree.depths[1,2]
@@ -53,3 +53,18 @@ for(i in 2:100){
 #save the results output
 write.csv(post.burn, file="../results/body_mass/bm.csv")
 
+#assign variable to store those runs that don't converge
+uncon1 <- c()
+#loops through to identify runs that have a low probability and don't reach 
+#convergence
+
+
+
+for(i in 1:100){
+  #looks at the mean rates of the two ascending rates from the model to see if 
+  #they are less than 0
+  if(mean(results[[i]]$asc2[950:1000])-mean(results[[i]]$asc1[950:1000]) < 0){
+    #stores the current run that didn't meet convergence
+    uncon1 <- c(uncon1, i)
+  }
+}
