@@ -150,17 +150,5 @@ temp <- mcmc(lik = con.lik,
 write.csv(temp, "../../results/range_size/rs_wocanid.csv")
 
 
-#read in chromplus data for range size
-fission <- temp$asc2 - temp$asc1
-fusion <- temp$desc2 - temp$desc1
-data_munge <- data.frame(fission, fusion)
-
-plotChromeplus(data = data_munge,
-               colors = c("#FDE725FF", "#39568CFF"),
-               main_title = "",
-               x_title = "rate difference (per MY)\n small - large range size",
-               alpha_geom = 0.75,
-               alpha_line = 0.45)
-
 
 

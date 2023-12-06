@@ -4,13 +4,13 @@ library(ggplot2)
 library(stringr)
 
 #read in the simulation of chromosme number results
-chroms <- read.csv("../results/simulation_chroms.csv")
+chroms <- read.csv("../../results/carn_delta_sim.csv")
 chroms <- chroms[,-1]
 
 #load in chromosome data from epirical dataset
-chroms.num <- read.csv("../data/chroms.csv")
+chroms.num <- read.csv("../../data/chroms.csv")
 #load in range size data from empirical dataset
-range.num <- read.csv("../data/calc.carn.range.sizes.csv")
+range.num <- read.csv("../../results/calc_carn_range_sizes.csv")
 
 #vector to store the final empirical chromosome number dataset
 hap.chrom <- c()

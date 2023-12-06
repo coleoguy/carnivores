@@ -223,11 +223,11 @@ for(i in 1:nrow(scalars.summarized)){
 }
 
 #### SAVE OUTPUTS ####
-save(scaled.trees,file="../results/scaled.trees.RData")
+save(scaled.trees,file="../results/scaled_trees.RData")
 save(list = c("scalar.means",
               "clade.edge.lengths",
               "scalar.means.multiplied",
-              "scalars.summarized"),file = "../results/summarized.scalar.outputs.RData")
+              "scalars.summarized"),file = "../results/summarized_scalar_outputs.RData")
 
 
 

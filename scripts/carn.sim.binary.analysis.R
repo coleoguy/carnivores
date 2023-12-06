@@ -94,6 +94,6 @@ abline(v=0.101)
 hist(abs(delta.r.sim$mean))
 abline(v=0.264)
 #save the results output
-write.csv(post.burn,file="../results/carn.delta.sim.csv")
+write.csv(post.burn,file="../results/carn_delta_sim.csv")
 
 
