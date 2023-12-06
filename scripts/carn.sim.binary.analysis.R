@@ -13,13 +13,13 @@ library(doMC)
 ###LOAD IN DATA###--------------------------------------------------------------
 
 #load in tree data
-trees <- read.nexus("../data/carnivorapruned.nex")
+trees <- read.nexus("../data/range_size/carnivora_rs_pruned.nex")
 
 #load in binary trait data
-load("../data/datalists_range.RData")
+load("../data/range_size/datalists_rangesize.RData")
 
 #load in tree depths
-tree.depths <- read.csv("../data/treedepths.csv")
+tree.depths <- read.csv("../data/range_size/rs_treedepths.csv")
 colnames(tree.depths) <- c("tree", "tree.depth")
 
 #assign prior from exponential distribution
@@ -67,7 +67,6 @@ x <- foreach(i = 1:100) %dopar%{
 }
 
 
-
 ##### Processing results #########
 #only process post burn-in results
 delta.r.sim <- as.data.frame(matrix(NA,100,4))
@@ -83,7 +82,7 @@ for(i in 1:100){
 }
 delta.r.sim$tree <- c(1:100)
 
-obs <- read.csv("../results/rangesize.csv")
+obs <- read.csv("../results/range_size/rs.csv")
 obs.fis <- mean(obs$asc2 - obs$asc1)
 obs.fus <- mean(obs$desc2 - obs$desc1)
 obs.mean <- mean(obs$asc2 + obs$desc2) - mean(obs$asc1 + obs$desc1)
@@ -95,6 +94,6 @@ abline(v=0.101)
 hist(abs(delta.r.sim$mean))
 abline(v=0.264)
 #save the results output
-write.csv(post.burn,file="../results/carn.delta.sim.hb.csv")
+write.csv(post.burn,file="../results/carn.delta.sim.csv")
 
 

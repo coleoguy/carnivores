@@ -1,5 +1,5 @@
 #read in the csv file with data
-range <- read.csv("range_size.csv")
+range <- read.csv("../../data/range_size/range_size.csv")
 #look at a histagram of the data
 hist(range$x, breaks =200)
 #adds a line to the histogram where the median is
@@ -10,4 +10,4 @@ median <- median(range$x)
 range[,3] <- range[,2] < median
 #changes T/F to 1/0
 range$V3[range$V3 == "TRUE"] <- 1 
-write.csv(range, "carn_rs_discrete.csv", row.names = F)
+write.csv(range, "../../data/carn_rs_discrete.csv", row.names = F)

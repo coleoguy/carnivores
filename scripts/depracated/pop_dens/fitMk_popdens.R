@@ -1,5 +1,5 @@
-trees <- read.nexus("../data/pop_dens/carnivora_pd_pruned.nex")
-pd <- read.csv("../data/pop_dens/pop_dens.csv")
+trees <- read.nexus("../../data/pop_dens/carnivora_pd_pruned.nex")
+pd <- read.csv("../../data/pop_dens/pop_dens.csv")
 
 tree <- trees[[1]]
 

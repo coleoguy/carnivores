@@ -13,17 +13,17 @@ library(viridis)
 ###LOAD IN DATA###--------------------------------------------------------------
 
 #load in tree data
-trees <- read.nexus("../data/carnivora.nex")
+trees <- read.nexus("../../data/carnivora.nex")
 for(i in 1:100){
   #trees are ultrametric, this line corrects for the fact that the tolerance
   #for being ultrametric is not met by some trees
   trees[[i]] <- force.ultrametric(trees[[i]], method = "extend")
 }
 #load in chromosome data
-chroms <- read.csv("../data/chroms.csv")
+chroms <- read.csv("../../data/chroms.csv")
 
 #load in range size
-pd <- read.csv("../data/pop_dens/pop_dens.csv")
+pd <- read.csv("../../data/pop_dens/pop_dens.csv")
 #subset out just the population density correction
 pd <- pd[,c(1,4)]
 #change column names to be informative
@@ -81,10 +81,10 @@ for(i in 1:100){
 rm(trees, cur.tree, i, j, missing, chroms, dat.pruned, pd, hit)
 
 #write out our pruned trees
-write.nexus(trees.pruned, file = "../data/pop_dens/carnivora_pd_pruned.nex")
+write.nexus(trees.pruned, file = "../../data/pop_dens/carnivora_pd_pruned.nex")
 
 #write out our prunned tree's tree depths
-write.csv(tree.depths, file = "../data/pop_dens/pd_treedepths.csv")
+write.csv(tree.depths, file = "../../data/pop_dens/pd_treedepths.csv")
 
 ###DISCRETIZE RANGE SIZES###----------------------------------------------------
 #discretize range size based on the median
@@ -114,6 +114,6 @@ for(i in 1:length(datalist)){
 rm(i, j, neworder, trees.pruned, tree.depths)
 
 #write out the environment to store the data lists 
-save.image("../data/pop_dens/datalists_popdens.RData")
+save.image("../../data/pop_dens/datalists_popdens.RData")
 
 

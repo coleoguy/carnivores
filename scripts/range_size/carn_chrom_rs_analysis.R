@@ -10,14 +10,14 @@ library(doMC)
 ###LOAD IN DATA NEEDED###-------------------------------------------------------
 
 #load in chromosome number and binary trait data
-load("../data/range_size/datalists_rangesize.RData")
+load("../../data/range_size/datalists_rangesize.RData")
 #0 = small; 1 = large pop size
 
 #load in tree data
-trees <- read.nexus("../data/range_size/carnivora_rs_pruned.nex")
+trees <- read.nexus("../../data/range_size/carnivora_rs_pruned.nex")
 
 #load in tree depths
-tree.depths <- read.csv("../data/range_size/rs_treedepths.csv")
+tree.depths <- read.csv("../../data/range_size/rs_treedepths.csv")
 colnames(tree.depths) <- c("tree", "tree.depth")
 
 
@@ -112,7 +112,7 @@ x1 <- foreach(i = 1:100) %dopar%{
                       upper = 50,
                       lower = 0)
 }
-save(x1, file="../results/range_size/trial1_rs.Rdata")
+save(x1, file="../../results/range_size/trial1_rs.Rdata")
 
 x2 <- foreach(i = 1:100) %dopar%{
   # make the basic likelihood function for the data
@@ -133,7 +133,7 @@ x2 <- foreach(i = 1:100) %dopar%{
                       upper = 50,
                       lower = 0)
 }
-save(x2, file="../results/range_size/trial2_rs.Rdata")
+save(x2, file="../../results/range_size/trial2_rs.Rdata")
 
 x3 <- foreach(i = 1:100) %dopar%{
   # make the basic likelihood function for the data
@@ -154,7 +154,7 @@ x3 <- foreach(i = 1:100) %dopar%{
                       upper = 50,
                       lower = 0)
 }
-save(x3, file="../results/range_size/trial3_rs.Rdata")
+save(x3, file="../../results/range_size/trial3_rs.Rdata")
 
 x4 <- foreach(i = 1:100) %dopar%{
   # make the basic likelihood function for the data
@@ -175,7 +175,7 @@ x4 <- foreach(i = 1:100) %dopar%{
                       upper = 50,
                       lower = 0)
 }
-save(x4, file="../results/range_size/trial4_rs.Rdata")
+save(x4, file="../../results/range_size/trial4_rs.Rdata")
 
 x5 <- foreach(i = 1:100) %dopar%{
   # make the basic likelihood function for the data
@@ -196,7 +196,7 @@ x5 <- foreach(i = 1:100) %dopar%{
                       upper = 50,
                       lower = 0)
 }
-save(x5, file="../results/range_size/trial5_rs.Rdata")
+save(x5, file="../../results/range_size/trial5_rs.Rdata")
 
 x6 <- foreach(i = 1:100) %dopar%{
   # make the basic likelihood function for the data
@@ -217,7 +217,7 @@ x6 <- foreach(i = 1:100) %dopar%{
                       upper = 50,
                       lower = 0)
 }
-save(x6, file="../results/range_size/trial6_rs.Rdata")
+save(x6, file="../../results/range_size/trial6_rs.Rdata")
 
 ##### Checking for convergence ###########
 # After checking runs I found that some runs stayend in a low prob

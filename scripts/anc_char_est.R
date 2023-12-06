@@ -10,14 +10,14 @@ library(evobiR)
 ###LOAD IN DATA NEEDED###-------------------------------------------------------
 
 #load in chromosome number and binary trait data
-load("../data/datalists_range.RData")
+load("../../data/range_size/datalists_rangesize.RData")
 #0 = small; 1 = large pop size
 
 #load in tree data
-trees <- read.nexus("../data/carnivorapruned.nex")
+trees <- read.nexus("../../data/range_size/carnivora_rs_pruned.nex")
 
 #load in tree depths
-tree.depths <- read.csv("../data/treedepths.csv")
+tree.depths <- read.csv("../../data/rs_treedepths.csv")
 colnames(tree.depths) <- c("tree", "tree.depth")
 
 #store chrom.range
@@ -31,7 +31,7 @@ for(i in 1:100){
 }
 
 #read in chromeplus data
-chromplus <- read.csv("../results/rangesize.csv")
+chromplus <- read.csv("../../results/range_size/rs.csv")
 
 #get the ancestral states
 source("getQ.function.R")
@@ -88,4 +88,4 @@ for(i in 1:100){
 }
 colnames(tiprates_complete) <- labels
 #write out the results for plotting later
-write.csv(tiprates_complete, "../results/tiprates_new.csv")
+write.csv(tiprates_complete, "../results/tiprates.csv")

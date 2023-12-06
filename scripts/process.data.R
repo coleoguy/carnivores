@@ -1,15 +1,15 @@
 library(ape)
-species <- read.nexus("carnivora.nex")[[1]]$tip.label
-chroms <- read.csv("mammal_chroms_update.csv", as.is=T)
+species <- read.nexus("../data/carnivora.nex")[[1]]$tip.label
+chroms <- read.csv("../data/mammal_chroms_update.csv", as.is=T)
 # we pared down this dataset to just location and
 # species name
-ranges <- read.delim("carnivorerange.csv",
+ranges <- read.delim("../data/carnivorerange.csv",
                     header = T,
                     sep="\t",
                     encoding="UTF-8",
                     as.is = T)
 ranges <- ranges[,c(10,22,23)]
-write.csv(ranges, file="carnivorerange-reducedcolumns.csv")
+write.csv(ranges, file="../data/carnivorerange_reducedcolumns.csv")
 
 # find the species in both chromosome and tree datasets
 good.species <- c()
@@ -28,7 +28,7 @@ good.table <- chroms[which(chroms$tree.name %in% good.species ), ]
 rm(chroms, species, i)
 
 # read the table that has coordinates
-ranges <- read.csv("carnivorerange-reducedcolumns.csv", as.is=T)
+ranges <- read.csv("../data/carnivorerange_reducedcolumns.csv", as.is=T)
 
 # keep all of the data that is for one of the species in good.species
 good.species2 <- c()
@@ -38,7 +38,7 @@ for(i in 1:length(good.species)){
 
 new.data <- ranges[ranges$species %in% good.species2, ]
 
-write.csv(new.data, "pruned.ranges.csv")
+write.csv(new.data, "../data/pruned_ranges.csv")
 
 #Need to find the species present in good.species but not in new.data
 #all.equal(good.species, new.data$species, ... = ,

@@ -4,12 +4,12 @@
 #the final posterior dataset for visualization
 
 #load in each of the replicates
-load("../results/range_size/trial1_rs.Rdata")
-load("../results/range_size/trial2_rs.Rdata")
-load("../results/range_size/trial3_rs.Rdata")
-load("../results/range_size/trial4_rs.Rdata")
-load("../results/range_size/trial5_rs.Rdata")
-load("../results/range_size/trial6_rs.Rdata")
+load("../../results/range_size/trial1_rs.Rdata")
+load("../../results/range_size/trial2_rs.Rdata")
+load("../../results/range_size/trial3_rs.Rdata")
+load("../../results/range_size/trial4_rs.Rdata")
+load("../../results/range_size/trial5_rs.Rdata")
+load("../../results/range_size/trial6_rs.Rdata")
 
 #create an empty 
 results <- list()
@@ -31,7 +31,7 @@ for(i in 1:length(x1)){
 }
 
 #load in the ttree depths to transform back into units of millions of years (MY)
-tree.depths <- read.csv("../data/range_size/rs_treedepths.csv")
+tree.depths <- read.csv("../../data/range_size/rs_treedepths.csv")
 
 #only process post burn-in results
 post.burn <- results[[1]][451:500, 2:8]
@@ -51,5 +51,5 @@ for(i in 2:100){
 }
 
 #save the results output
-write.csv(post.burn, file="../results/range_size/rs.csv")
+write.csv(post.burn, file="../../results/range_size/rs.csv")
 

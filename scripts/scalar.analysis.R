@@ -11,12 +11,12 @@ library(ggplot2)
 source("functions.R")
 
 #### LOAD DATA ####
-load("../data/datalists_range.RData")
+load("../data/range_size/datalists_rangesize.RData")
 
 fam.dat <- read.csv("../data/fam_data.csv",
                     as.is=T)[,-1]
 
-trees <- read.nexus("../data/carnivorapruned.nex")
+trees <- read.nexus("../data/range_size/carnivora_rs_pruned.nex")
 
 mat <- as.matrix(read.csv("../data/Q_matrix.csv"))[,-1]
 

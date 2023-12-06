@@ -1,6 +1,6 @@
-bm <- read.csv("../data/body_mass.csv")
+bm <- read.csv("../../data/body_mass/body_mass.csv")
 
-rs <- read.csv("../data/range_size.csv")
+rs <- read.csv("../../data/range_size/range_size.csv")
 
 for(i in 1:nrow(bm)){
   hit <- which(rs$X == bm$species[i])

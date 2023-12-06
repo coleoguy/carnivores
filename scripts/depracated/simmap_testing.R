@@ -6,11 +6,11 @@ library(doMC)
 ###LOAD IN DATA NEEDED###-------------------------------------------------------
 
 #load in chromosome number and binary trait data
-load("../data/datalists_popdens.RData")
+load("../data/pop_dens/datalists_popdens.RData")
 #0 = small; 1 = large pop size
 
 #load in tree data
-trees <- read.nexus("../data/carnivora_pd_pruned.nex")
+trees <- read.nexus("../data/pop_dens/carnivora_pd_pruned.nex")
 
 smap.trees <- list()
 s1 <- foreach(i = 1:100) %dopar%{

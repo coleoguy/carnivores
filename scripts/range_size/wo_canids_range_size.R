@@ -147,6 +147,8 @@ temp <- mcmc(lik = con.lik,
              upper = 20,
              lower = 0)
 
+write.csv(temp, "../../results/range_size/rs_wocanid.csv")
+
 
 #read in chromplus data for range size
 fission <- temp$asc2 - temp$asc1
