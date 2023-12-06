@@ -13,7 +13,7 @@ library(viridis)
 ###LOAD IN DATA###--------------------------------------------------------------
 
 #load in tree data
-trees <- read.nexus("../data/carnivora.nex")
+trees <- read.nexus("../../data/carnivora.nex")
 for(i in 1:100){
   #trees are ultrametric, this line corrects for the fact that the tolerance
   #for being ultrametric is not met by some trees
