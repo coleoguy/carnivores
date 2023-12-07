@@ -4,10 +4,10 @@ library(ggplot2)
 library(stringr)
 
 #read in the simulation of chromosme number results
-chroms <- read.csv("../../results/carn_delta_sim.csv")
+chroms <- read.csv("../../results/simulation_chroms.csv")
 chroms <- chroms[,-1]
 
-#load in chromosome data from epirical dataset
+#load in chromosome data from empirical dataset
 chroms.num <- read.csv("../../data/chroms.csv")
 #load in range size data from empirical dataset
 range.num <- read.csv("../../results/calc_carn_range_sizes.csv")
