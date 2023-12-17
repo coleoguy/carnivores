@@ -13,17 +13,22 @@ scalar.state <- ggplot(data = scalars.summarized,
                            fill = scalar.state))+
   geom_bar(data = subset(scalars.summarized,
                          scalar.state == "Elevated"),
-           stat = "identity")+
+           stat = "identity", 
+           fill = "#FDE725FF")+
   geom_bar(data = subset(scalars.summarized,
                          scalar.state == "Depressed"),
            aes(y = -proportion),
-           stat = "identity")+
+           stat = "identity",
+           fill = "#39568CFF")+
   xlab("")+
   ylab("Proportion of Family in Each State")+
   labs(fill = "State of Chromosome \n\ Number Evolution")+
   geom_hline(yintercept=0, 
              linetype="dashed", 
-             color = "black")
+             color = "black") +
+  theme_bw() + 
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
 
 #save
 ggsave(scalar.state,

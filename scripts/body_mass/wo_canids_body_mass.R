@@ -1,5 +1,10 @@
 #rerunning chromplus analysis with canidae removed
 
+#load in packages needed to run analysis
+library(phytools)
+library(chromePlus)
+library(diversitree)
+
 #load in tree data
 trees <- read.nexus("../../data/carnivora.nex")
 for(i in 1:100){
