@@ -13,9 +13,10 @@ fusion <- data[,5] - data[,3]
 data_munge <- data.frame(fission, fusion)
 
 plotChromeplus(data = data_munge,
-                colors = c("#FDE725FF", "#39568CFF"),
-                x_title = "rate difference (per MY)\n small - large range size",
-                alpha_geom = 0.75,
-                alpha_line = 0.45)
+               colors = c("#FDE725FF", "#39568CFF"),
+               x_title = "rate difference (per MY)\n small - large range size",
+               alpha_geom = 0.75,
+               alpha_line = 0.45,
+               main_title = "")
 
 #save as PDF 6"x6"
