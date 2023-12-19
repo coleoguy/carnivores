@@ -41,7 +41,9 @@ plot(density(chrom_all[,1]),
      xlim=c(7,44),
      xlab = "Chromosome Number",
      ylab = "Density",
-     main = "")
+     main = "",
+     cex.axis = 1.5,
+     cex.lab = 1.5,)
 #plot the other 100 trees of density
 for(i in 2:101){
   if(i!=101){

@@ -21,14 +21,17 @@ scalar.state <- ggplot(data = scalars.summarized,
            stat = "identity",
            fill = "#39568CFF")+
   xlab("")+
-  ylab("Proportion of Family in Each State")+
+  ylab("Proportion of Branches in Each State")+
   labs(fill = "State of Chromosome \n\ Number Evolution")+
   geom_hline(yintercept=0, 
              linetype="dashed", 
              color = "black") +
   theme_bw() + 
   theme(panel.border = element_blank(), panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+        panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"),
+        axis.text.x = element_text(color = "black", angle = 45, hjust = 1, size = 15),
+        axis.title.y = element_text(size = 20),
+        axis.text.y = element_text(color = "black", size = 15))
 
 #save
 ggsave(scalar.state,

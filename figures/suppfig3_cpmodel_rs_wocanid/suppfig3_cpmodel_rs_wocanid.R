@@ -10,8 +10,8 @@ library(chromePlus)
 data <- read.csv("../../results/range_size/rs_wocanid.csv")
 
 #read in chromplus data for range size
-fission <- temp$asc2 - temp$asc1
-fusion <- temp$desc2 - temp$desc1
+fission <- data[,5] - data[,3]
+fusion <- data[,6] - data[,4]
 data_munge <- data.frame(fission, fusion)
 
 plotChromeplus(data = data_munge,

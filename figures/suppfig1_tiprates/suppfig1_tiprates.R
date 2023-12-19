@@ -14,7 +14,7 @@ load("../../data/range_size/datalists_rangesize.RData")
 #0 = small; 1 = large pop size
 
 #load in tree data
-trees <- read.nexus("../../data/carnivora_rs_pruned.nex")
+trees <- read.nexus("../../data/range_size/carnivora_rs_pruned.nex")
 #reduce to one tree from dataset that is needed
 tree <- trees[[1]]
 #save the order of the tree tip labels in order from 1:length of data rather
@@ -50,7 +50,9 @@ plot(y = 1:110, x = data_all$tip_rates.Average,
      pch = 21,
      cex = 0.9,
      col = "black",
+     cex.axis = 1.5,
+     cex.lab = 1.5,
      bg = c("#FDE725FF", "#39568CFF")[data_all$range.size + 1])
 
-#export as PDF 8.5"x11"
+#export as PDF 6"x11"
 

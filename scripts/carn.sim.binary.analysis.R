@@ -26,8 +26,8 @@ colnames(tree.depths) <- c("tree", "tree.depth")
 prior <- make.prior.exponential(2)
 
 # from primary analysis we can get our w
-w <- c(14.44759, 12.13979, 16.06275, 14.23117, 2.477789, 3.194005)
-
+w <-  c(0.6598417, 0.7470406, 4.915778, 4.435216, 2.065825, 2.17056)
+(2.629011e-04	7.210639e-03	0.12957821	0.10673725	0.03516629	0.02888419)
 # register cores to use in parallel
 registerDoMC(detectCores(all.tests = T) - 3)
 
@@ -72,7 +72,7 @@ x <- foreach(i = 1:100) %dopar%{
 delta.r.sim <- as.data.frame(matrix(NA,100,4))
 colnames(delta.r.sim) <-c("tree","fission","fusions", "mean")
 for(i in 1:100){
-  temp <- x[[i]]
+  temp <- result[[i]]
   temp[,2:7] <- temp[,2:7]/tree.depths$tree.depth[i]
   temp <- temp[451:500,]
   delta.r.sim$fission[i] <- mean(temp$asc2 - temp$asc1)
