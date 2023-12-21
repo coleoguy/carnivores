@@ -48,10 +48,12 @@ plot(y = 1:110,
      xlim = c(15, 40), 
      pch = 21,
      cex = 0.9,
+     cex.axis = 1.5,
+     cex.lab = 1.5,
      col = "black",
      bg = c("#FDE725FF", "#39568CFF")[data_all$range.size + 1])
 
-#export as PDF 8.5"x11"
+#export as PDF 6"x11"
 
 
 

@@ -27,8 +27,7 @@ colnames(tree.depths) <- c("tree", "tree.depth")
 prior <- make.prior.exponential(2)
 
 # from primary analysis we can get our w
-w <- c(14.44759, 12.13979, 16.06275, 14.23117, 2.477789, 3.194005)
-
+w <-  c(14.44759, 12.13979, 16.06275, 14.23117, 2.477789, 3.194005)
 # register cores to use in parallel
 registerDoMC(detectCores(all.tests = T) - 1)
 
