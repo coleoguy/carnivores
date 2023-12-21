@@ -28,10 +28,13 @@ scalar.state <- ggplot(data = scalars.summarized,
              color = "black") +
   theme_bw() + 
   theme(panel.border = element_blank(), panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
-
+        panel.grid.minor = element_blank(), 
+        axis.line = element_line(colour = "black"),
+        axis.text.x = element_text(angle = 45, vjust=.5))
+# exported 4.5x4.5
 #save
-ggsave(scalar.state,
+plot(scalar.state)
+,
        filename = paste0("fig3_scalar_rates.pdf"),
        width = 14,
        height = 7,
