@@ -29,7 +29,7 @@ prior <- make.prior.exponential(2)
 # from primary analysis we can get our w
 w <-  c(14.44759, 12.13979, 16.06275, 14.23117, 2.477789, 3.194005)
 # register cores to use in parallel
-registerDoMC(detectCores(all.tests = T) - 1)
+registerDoMC(detectCores(all.tests = T) - 35)
 
 #set iter to 200  for the number of steps to take in the model
 iter <- 200
@@ -65,13 +65,21 @@ x <- foreach(j = 1:100) %dopar%{
   }
   postburn
 }
-#
+
+for(i in 1:100){
+  temp <- x[i]
+  write.csv(temp, paste0("../results/trait_sim/trait", i, ".csv"))
+}
+
 sig.asc <- sig.desc <- c()
+mn.asc <- mn.desc <- c()
 for(i in 1:100){
   curdat <- x[[i]]
   dr.asc <- dr.desc <- c()
   dr.asc <- curdat$asc1 - curdat$asc2
   dr.desc <- curdat$desc1 - curdat$desc2
+  mn.asc[i] <- mean(dr.asc)
+  mn.desc[i] <- mean(dr.desc)
   cint <- HPDinterval(as.mcmc(dr.asc))[1:2]
   if(cint[1] < 0 & cint[2] > 0){
     sig.asc[i] <- F
@@ -87,44 +95,11 @@ for(i in 1:100){
 }
 sum(sig.desc)/100
 sum(sig.asc)/100
-#
-#
-#
-#
-
-  #store chrom.range
-  # make the basic likelihood function for the data
- # now we constrain our model to be biologically realistic for
-  # chromosomes.
-  # now we are ready to run our inference run
-}
 
 
-##### Processing results #########
-#only process post burn-in results
-delta.r.sim <- as.data.frame(matrix(NA,100,4))
-colnames(delta.r.sim) <-c("tree","fission","fusions", "mean")
+mn.mn.rates <- c()
 for(i in 1:100){
-  temp <- x[[i]]
-  temp[,2:7] <- temp[,2:7]/tree.depths$tree.depth[i]
-  temp <- temp[451:500,]
-  delta.r.sim$fission[i] <- mean(temp$asc2 - temp$asc1)
-  delta.r.sim$fusions[i] <- mean(temp$desc2 - temp$desc1)
-
+  mn.mn.rates[i] <- abs(mn.asc[i] + mn.desc[i]) / 2
 }
-delta.r.sim$tree <- c(1:100)
-
-obs <- read.csv("../results/range_size/rs.csv")
-obs.fis <- mean(obs$asc2 - obs$asc1)
-obs.fus <- mean(obs$desc2 - obs$desc1)
-
-hist(abs(delta.r.sim$fission))
-abline(v=0.163)
-hist(abs(delta.r.sim$fusions))
-abline(v=0.101)
-hist(abs(delta.r.sim$mean))
-abline(v=0.264)
-#save the results output
-write.csv(post.burn,file="../results/carn_delta_sim.csv")
-
-
+emp <- (.101+.163)/2
+sum(mn.mn.rates >= emp) / 100
